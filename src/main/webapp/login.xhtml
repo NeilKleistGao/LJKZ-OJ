@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: neilkleistgao
+  Date: 2020/8/23
+  Time: 上午12:26
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+    <title>LJKZ OJ - Login</title>
+    <ui:include src="components/page_head.xhtml"/>
+</h:head>
+
+<h:body>
+    <ui:include src="components/navigation.xhtml"/>
+
+    <div class="row justify-content-center">
+        <div class="col-4 card text-white bg-secondary mb-3y">
+            <div class="card-body">
+                <h3 class="card-title">Login</h3>
+                <h:form styleClass="form-group">
+                    <h:outputLabel for="email" value="Email:" styleClass="form-control-label"/>
+                    <h:inputText id="email" value="#{login_bean.email}" styleClass="form-control"/>
+                    <br/>
+
+                    <h:outputLabel for="password" value="Password:" styleClass="form-control-label"/>
+                    <h:inputSecret id="password" value="#{login_bean.password}" styleClass="form-control" validator="#{login_bean.validate}"/>
+                    <h:outputText value="#{login_bean.error}" styleClass="text-danger"/>
+                    <br/>
+
+                    <h:commandButton value="login" action="#{login_bean.login}" styleClass="btn btn-outline-success"/>
+                </h:form>
+            </div>
+        </div>
+    </div>
+
+</h:body>
+
+</html>
