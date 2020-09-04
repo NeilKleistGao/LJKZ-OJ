@@ -10,7 +10,6 @@ public class Problem {
     @Id
     private String pid;
     private String title, problemDesc, exampleInput, exampleOutput, labels;
-    private String dataPath;
     private int totalSubmit = 0, acSubmit = 0;
     private boolean competitionOnly;
     private int memoryLimit = 128, timeLimit = 1;
@@ -55,10 +54,6 @@ public class Problem {
         return acSubmit;
     }
 
-    public String getDataPath() {
-        return dataPath;
-    }
-
     public String getExampleInput() {
         return exampleInput;
     }
@@ -73,10 +68,6 @@ public class Problem {
 
     public void setAcSubmit(int acceptSubmit) {
         this.acSubmit = acceptSubmit;
-    }
-
-    public void setDataPath(String dataPath) {
-        this.dataPath = dataPath;
     }
 
     public void setExampleInput(String exampleInput) {

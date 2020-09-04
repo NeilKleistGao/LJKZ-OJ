@@ -180,7 +180,6 @@ public class UserBean {
             }
 
             this.username = user.getUsername();
-            this.avatar = user.getAvatar();
             this.acNum = user.getAcNum();
             this.waNum = user.getWaNum();
             this.tleNum = user.getTleNum();

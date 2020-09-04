@@ -6,6 +6,7 @@ import utils.MD5;
 import utils.Zip;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.Part;
 import java.io.IOException;
@@ -25,6 +26,9 @@ public class CreateProblemBean {
     private boolean update = false;
     private Part file = null;
     private int timeLimit = 1, memoryLimit = 128;
+
+    @EJB
+    private ProblemDAO problemDAO;
 
     public boolean isCompetitionOnly() {
         return competitionOnly;
@@ -108,22 +112,16 @@ public class CreateProblemBean {
 
     public void load() {
         if ("".equals(this.pid)) {
-            try (ProblemDAO dao = new ProblemDAO()) {
-                Problem problem = dao.getProblem(this.pid);
-                this.problemDesc = problem.getProblemDesc();
-                this.competitionOnly = problem.isCompetitionOnly();
-                this.exampleInput = problem.getExampleInput();
-                this.exampleOutput = problem.getExampleOutput();
-                this.labels = problem.getLabels();
-                this.title = problem.getTitle();
-                this.dataPath = problem.getDataPath();
-                this.timeLimit = problem.getTimeLimit();
-                this.memoryLimit = problem.getMemoryLimit();
-                this.update = true;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            Problem problem = problemDAO.getProblem(pid);
+            this.problemDesc = problem.getProblemDesc();
+            this.competitionOnly = problem.isCompetitionOnly();
+            this.exampleInput = problem.getExampleInput();
+            this.exampleOutput = problem.getExampleOutput();
+            this.labels = problem.getLabels();
+            this.title = problem.getTitle();
+            this.timeLimit = problem.getTimeLimit();
+            this.memoryLimit = problem.getMemoryLimit();
+            this.update = true;
         }
     }
 
@@ -146,15 +144,10 @@ public class CreateProblemBean {
 
                 Files.copy(stream, dataFile.toPath());
                 Zip.unzip(pid);
-                problem.setDataPath(pid);
             }
             catch (IOException e) {
                 e.printStackTrace();
-                problem.setDataPath(pid);
             }
-        }
-        else {
-            problem.setDataPath(this.dataPath);
         }
 
         problem.setExampleInput(this.exampleInput);
@@ -165,17 +158,11 @@ public class CreateProblemBean {
         problem.setMemoryLimit(this.memoryLimit);
         problem.setTimeLimit(this.timeLimit);
 
-        try (ProblemDAO dao = new ProblemDAO()) {
-            if (this.update){
-                dao.update(problem);
-            }
-            else {
-                dao.insert(problem);
-            }
-
+        if (this.update){
+            problemDAO.addProblem(problem);
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        else {
+            problemDAO.updateProblem(problem);
         }
 
         return "problems";

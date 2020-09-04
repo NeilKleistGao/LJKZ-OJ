@@ -7,6 +7,7 @@ import entity.Submission;
 import utils.Judger;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -20,6 +21,9 @@ public class ProblemBean {
     private Problem problem = new Problem();
     private String code = "";
 
+    @EJB
+    private ProblemDAO problemDAO;
+
     public Problem getProblem() {
         return problem;
     }
@@ -29,12 +33,7 @@ public class ProblemBean {
     }
 
     public void init() {
-        try (ProblemDAO dao = new ProblemDAO()) {
-            this.problem = dao.getProblem(this.problem.getPid());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.problem = problemDAO.getProblem(this.problem.getPid());
     }
 
     public String getCode() {
@@ -65,13 +64,8 @@ public class ProblemBean {
 
         judger.commit(submission);
 
-        try (ProblemDAO dao = new ProblemDAO()) {
-            this.problem.setTotalSubmit(this.problem.getTotalSubmit() + 1);
-            dao.update(this.problem);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.problem.setTotalSubmit(this.problem.getTotalSubmit() + 1);
+        problemDAO.updateProblem(this.problem);
 
         return "success";
     }

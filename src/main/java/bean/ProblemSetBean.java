@@ -6,6 +6,7 @@ import entity.Problem;
 import utils.Pagination;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -92,6 +93,9 @@ public class ProblemSetBean {
     private String searchFor = "title", searchContent = "";
     private Pagination[] paginations = null;
 
+    @EJB
+    private ProblemDAO problemDAO;
+
     public Entry[] getEntries() {
         return entries;
     }
@@ -133,23 +137,19 @@ public class ProblemSetBean {
     }
 
     public void init() {
-        try (ProblemDAO dao = new ProblemDAO()) {
-            this.totalNumber = (dao.getTotal() + NUMBER_OF_ENTRIES_IN_PAGE - 1) / NUMBER_OF_ENTRIES_IN_PAGE;
-            List<Problem> problems = dao.getProblems(NUMBER_OF_ENTRIES_IN_PAGE, this.pageNumber - 1, this.searchFor, this.searchContent);
-            for (int i = 0; i < problems.size(); i++) {
-                this.entries[i] = new Entry();
-                Problem problem = problems.get(i);
-                this.entries[i].setPid(problem.getPid());
-                this.entries[i].setAcSubmit(problem.getAcSubmit());
-                this.entries[i].setLabels(problem.getLabels());
-                this.entries[i].setTitle(problem.getTitle());
-            }
+        this.totalNumber = (problemDAO.getTotal() + NUMBER_OF_ENTRIES_IN_PAGE - 1) / NUMBER_OF_ENTRIES_IN_PAGE;
+        List<Problem> problems = problemDAO.getProblemList(this.pageNumber - 1, NUMBER_OF_ENTRIES_IN_PAGE,
+                searchFor, searchContent);
+        for (int i = 0; i < problems.size(); i++) {
+            this.entries[i] = new Entry();
+            Problem problem = problems.get(i);
+            this.entries[i].setPid(problem.getPid());
+            this.entries[i].setAcSubmit(problem.getAcSubmit());
+            this.entries[i].setLabels(problem.getLabels());
+            this.entries[i].setTitle(problem.getTitle());
+        }
 
-            this.setAccepted();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.setAccepted();
 
         if (this.totalNumber == 0) {
             this.totalNumber = 1;

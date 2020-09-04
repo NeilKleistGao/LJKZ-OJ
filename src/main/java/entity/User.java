@@ -9,7 +9,7 @@ import javax.persistence.Table;
 public class User {
     @Id
     private String email;
-    private String username, password, avatar = "default.png";
+    private String username, password;
     private Integer acNum = 0, waNum = 0, tleNum = 0, mleNum = 0, reNum = 0, ceNum = 0;
 
     public void setEmail(String email) {
@@ -82,13 +82,5 @@ public class User {
 
     public void setWaNum(Integer waNum) {
         this.waNum = waNum;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 }
