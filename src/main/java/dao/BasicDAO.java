@@ -3,26 +3,28 @@ package dao;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
 import javax.ejb.Singleton;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Singleton
 public class BasicDAO {
-    public BasicDAO() { }
-    private static SqlSessionFactory sqlSessionFactory;
-    public static SqlSessionFactory getSqlSessionFactory(){
-        if(sqlSessionFactory == null){
-            InputStream inputStream;
-            try{
-                inputStream = Resources.getResourceAsStream("mybatis-config.xml");
-            }catch (IOException e){
-                throw new RuntimeException(e.getCause());
-            }
+    private SqlSessionFactory sqlSessionFactory;
+
+    private BasicDAO() {
+        try {
+            String resourcePath = "mybatis-config.xml";
+            InputStream stream = Resources.getResourceAsStream(resourcePath);
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(stream);
         }
-        return sqlSessionFactory;
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    public static SqlSession openSession(){
-        return getSqlSessionFactory().openSession();
+
+    public SqlSession createSession() {
+        return sqlSessionFactory.openSession();
     }
 }

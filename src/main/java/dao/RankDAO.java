@@ -8,14 +8,13 @@ import javax.ejb.Stateless;
 import java.util.List;
 
 @Stateless
-public class RankDAO extends BasicDAO implements IRankDAO {
-
-    @EJB
-    private  BasicDAO basicDAO;
+public class RankDAO implements IRankDAO {
     private SqlSession session;
+    @EJB
+    private BasicDAO basicDAO;
 
-    public RankDAO() throws Exception {
-        super();
+    public RankDAO() {
+        session = basicDAO.createSession();
     }
 
     public List<Rank> getRankByEmail(String email) {

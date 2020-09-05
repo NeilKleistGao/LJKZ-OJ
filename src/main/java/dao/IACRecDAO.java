@@ -1,11 +1,13 @@
 package dao;
 
 import entity.ACRec;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface IACRecDAO {
-    public void addACRec(ACRec rec);
-    public List<String> getACRecByEmail(ACRec rec);
-    public List<String> getACRecByCompetition(ACRec rec);
+    void addACRec(ACRec rec);
+    List<String> getACRecByEmail(String email);
+    List<String> getACRecByCompetition(ACRec rec);
 }

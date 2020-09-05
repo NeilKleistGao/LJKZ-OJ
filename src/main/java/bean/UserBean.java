@@ -6,6 +6,7 @@ import sun.security.validator.ValidatorException;
 import utils.MD5;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputSecret;
@@ -30,6 +31,9 @@ public class UserBean {
     private String usernameFeedback, passwordFeedback, confirmFeedback;
     private int acNum, waNum, tleNum, mleNum, ceNum, reNum;
     private Part file = null;
+
+    @EJB
+    private UserDAO userDAO;
 
     public String getUid() {
         return uid;
@@ -173,22 +177,18 @@ public class UserBean {
 
     private void init() {
         this.email = new String(Base64.getDecoder().decode(this.uid));
-        try (UserDAO dao = new UserDAO()) {
-            User user = dao.getUser(this.email);
-            if (user == null) {
-                return;
-            }
+        User user = userDAO.getUser(this.email);
+        if (user == null) {
+            return;
+        }
 
-            this.username = user.getUsername();
-            this.acNum = user.getAcNum();
-            this.waNum = user.getWaNum();
-            this.tleNum = user.getTleNum();
-            this.mleNum = user.getMleNum();
-            this.ceNum = user.getCeNum();
-            this.reNum = user.getReNum();
-        }
-        catch (Exception e) {
-        }
+        this.username = user.getUsername();
+        this.acNum = user.getAcNum();
+        this.waNum = user.getWaNum();
+        this.tleNum = user.getTleNum();
+        this.mleNum = user.getMleNum();
+        this.ceNum = user.getCeNum();
+        this.reNum = user.getReNum();
     }
 
     public void validateUsername(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -255,12 +255,9 @@ public class UserBean {
             }
 
             this.email = new String(Base64.getDecoder().decode(this.uid));
-            try (UserDAO dao = new UserDAO()) {
-                dao.updateBasicInfo(email, username, avatar);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            User user = userDAO.getUser(this.email);
+            user.setUsername(this.username);
+            userDAO.updateUser(user);
         }
     }
 
@@ -271,16 +268,10 @@ public class UserBean {
 
         if (map.containsKey("uid") && map.get("uid").equals(this.uid)) {
             this.email = new String(Base64.getDecoder().decode(this.uid));
-            try (UserDAO dao = new UserDAO()) {
-                User new_one = new User();
-                new_one.setEmail(email);
-                new_one.setPassword(MD5.encrypt(this.newPassword));
-
-                if (dao.check(new_one)) {
-                    dao.updatePassword(email, MD5.encrypt(this.newPassword));
-                }
-            }
-            catch (Exception e){
+            User user = userDAO.getUser(this.email);
+            if (user.getPassword().equals(MD5.encrypt(this.oldPassword))) {
+                user.setPassword(MD5.encrypt(this.newPassword));
+                userDAO.updateUser(user);
             }
         }
     }

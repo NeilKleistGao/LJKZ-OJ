@@ -11,12 +11,12 @@ import java.util.Map;
 
 @Stateless
 public class ProblemDAO implements IProblemDAO {
-
-    @EJB
-    private  BasicDAO basicDAO;
     private SqlSession session;
+    @EJB
+    private BasicDAO basicDAO;
+
     public void addProblem(Problem problem) {
-        session = basicDAO.openSession();
+        session = basicDAO.createSession();
     }
 
     public Problem getProblem(String pid) {

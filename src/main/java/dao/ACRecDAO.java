@@ -1,20 +1,19 @@
 package dao;
 
 import entity.ACRec;
-import lombok.Data;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import java.util.List;
 
-@Data
+@Stateless
 public class ACRecDAO implements IACRecDAO {
-
+    private SqlSession session;
     @EJB
     private BasicDAO basicDAO;
-    private SqlSession session;
-    public ACRecDAO() throws Exception {
-        session = basicDAO.openSession();
+    public ACRecDAO() {
+        session = basicDAO.createSession();
     }
     public void addACRec(ACRec rec) {
         session.insert("", rec);
@@ -22,8 +21,8 @@ public class ACRecDAO implements IACRecDAO {
         session.close();
     }
 
-    public List<String> getACRecByEmail(ACRec rec) {
-        return session.selectList("getRecordByEmail", rec);
+    public List<String> getACRecByEmail(String email) {
+        return session.selectList("getRecordByEmail", email);
     }
 
     public List<String> getACRecByCompetition(ACRec rec) {

@@ -8,17 +8,14 @@ import javax.ejb.Stateless;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Stateless
 public class CompetitionDAO implements ICompetitionDAO {
-
-
-
-
+    private SqlSession session;
     @EJB
-    private  BasicDAO basicDAO;
-    private  SqlSession session;
-    public CompetitionDAO(BasicDAO basicDAO) {
-        session = basicDAO.openSession();
+    private BasicDAO basicDAO;
+    public CompetitionDAO() {
+        session = basicDAO.createSession();
     }
 
     public List<Competition> getCompetitionList(int start, int size) {

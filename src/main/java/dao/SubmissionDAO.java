@@ -11,11 +11,11 @@ import java.util.Map;
 
 @Stateless
 public class SubmissionDAO implements ISubmissionDAO{
-    @EJB
-    private  BasicDAO basicDAO;
     private SqlSession session;
-    public SubmissionDAO() throws Exception {
-        session = basicDAO.openSession();
+    @EJB
+    private BasicDAO basicDAO;
+    public SubmissionDAO() {
+        session = basicDAO.createSession();
     }
 
     public void insert(Submission submission) {

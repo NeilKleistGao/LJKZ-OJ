@@ -8,12 +8,11 @@ import javax.ejb.Stateless;
 
 @Stateless
 public class UserDAO implements IUserDAO{
-
-    @EJB
-    private  BasicDAO basicDAO;
     private SqlSession session;
+    @EJB
+    private BasicDAO basicDAO;
     public UserDAO(){
-        session = basicDAO.openSession();
+        session = basicDAO.createSession();
     }
 
     public User getUser(String email) {

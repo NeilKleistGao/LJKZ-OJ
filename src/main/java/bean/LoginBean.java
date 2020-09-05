@@ -6,6 +6,7 @@ import sun.security.validator.ValidatorException;
 import utils.MD5;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputText;
@@ -18,6 +19,8 @@ import java.util.Map;
 @RequestScoped
 public class LoginBean {
     private String email, password, error;
+    @EJB
+    private UserDAO userDAO;
 
     public void setEmail(String email) {
         this.email = email;
@@ -55,23 +58,16 @@ public class LoginBean {
             this.error = "blank field is not allowed!";
         }
 
-        try (UserDAO dao = new UserDAO()) {
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(MD5.encrypt(password));
-            if (!dao.check(user)) {
-                this.error = "wrong username or password!";
-            }
-            else {
-                user = dao.getUser(email);
-                ExternalContext ex = context.getExternalContext();
-                Map session_map = ex.getSessionMap();
-                session_map.put("uid", Base64.getEncoder().encodeToString(email.getBytes()));
-                session_map.put("username", user.getUsername());
-                this.error = "";
-            }
+        User user = userDAO.getUser(email);
+        if (user.getPassword().equals(MD5.encrypt(password))) {
+            ExternalContext ex = context.getExternalContext();
+            Map session_map = ex.getSessionMap();
+            session_map.put("uid", Base64.getEncoder().encodeToString(email.getBytes()));
+            session_map.put("username", user.getUsername());
+            this.error = "";
         }
-        catch (Exception e) {
+        else {
+            this.error = "wrong username or password!";
         }
     }
 

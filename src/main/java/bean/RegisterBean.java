@@ -6,6 +6,7 @@ import sun.security.validator.ValidatorException;
 import utils.MD5;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputSecret;
@@ -22,7 +23,8 @@ public class RegisterBean {
     private final String EMAIL_PATTERN = "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
     private String email, username, password, confirm;
     private String emailFeedback, usernameFeedback, passwordFeedback, confirmFeedback;
-    UserDAO userDAO = new UserDAO();
+    @EJB
+    private UserDAO userDAO;
 
     public String getConfirm() {
         return confirm;
@@ -74,7 +76,8 @@ public class RegisterBean {
 
     public void validateEmail(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         Pattern pattern = Pattern.compile(this.EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(value.toString().trim());
+        String email = value.toString().trim();
+        Matcher matcher = pattern.matcher(email);
 
         if (!matcher.matches()) {
             this.emailFeedback = "wrong email format!";
@@ -82,10 +85,10 @@ public class RegisterBean {
         else {
             this.emailFeedback = "";
         }
-        if (userDAO.exist(value.toString().trim())) {
-                this.emailFeedback = "this email has been used!";
-            }
-        catch (Exception e) {
+
+        User user = userDAO.getUser(email);
+        if (user != null) {
+            this.emailFeedback = "this email has been used!";
         }
     }
 
@@ -136,18 +139,13 @@ public class RegisterBean {
                 "".equals(this.emailFeedback) &&
                 "".equals(this.passwordFeedback) &&
                 "".equals(this.usernameFeedback)) {
-            try (UserDAO dao = new UserDAO()) {
-                User user = new User();
-                user.setEmail(this.email);
-                user.setUsername(this.username);
-                user.setPassword(MD5.encrypt(this.password));
-                dao.addUser(user);
+            User user = new User();
+            user.setEmail(this.email);
+            user.setUsername(this.username);
+            user.setPassword(MD5.encrypt(this.password));
+            userDAO.addUser(user);
 
-                return "success";
-            }
-            catch (Exception e) {
-                return "fail";
-            }
+            return "success";
         }
 
         return "fail";

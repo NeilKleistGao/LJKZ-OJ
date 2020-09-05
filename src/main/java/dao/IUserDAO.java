@@ -1,10 +1,12 @@
 package dao;
 
 import entity.User;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface IUserDAO {
-    public User getUser(String email);
-    public void addUser(User user);
-    public void updateUser(User user);
-    public boolean exist(String email);
+    User getUser(String email);
+    void addUser(User user);
+    void updateUser(User user);
+    boolean exist(String email);
 }

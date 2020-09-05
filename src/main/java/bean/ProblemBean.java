@@ -4,7 +4,6 @@ import dao.ProblemDAO;
 import dao.SubmissionDAO;
 import entity.Problem;
 import entity.Submission;
-import utils.Judger;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -23,6 +22,8 @@ public class ProblemBean {
 
     @EJB
     private ProblemDAO problemDAO;
+    @EJB
+    private SubmissionDAO submissionDAO;
 
     public Problem getProblem() {
         return problem;
@@ -53,7 +54,6 @@ public class ProblemBean {
             return "fail";
         }
 
-        Judger judger = Judger.getInstance();
         Submission submission = new Submission();
         submission.setEmail(new String(Base64.getDecoder().decode(map.get("uid").toString())));
         submission.setPid(problem.getPid());
@@ -61,8 +61,7 @@ public class ProblemBean {
         submission.setSubmitCode(this.code);
         submission.setSubmitTime(new Date());
         submission.setNormalSubmit(!problem.isCompetitionOnly());
-
-        judger.commit(submission);
+        submissionDAO.insert(submission);
 
         this.problem.setTotalSubmit(this.problem.getTotalSubmit() + 1);
         problemDAO.updateProblem(this.problem);

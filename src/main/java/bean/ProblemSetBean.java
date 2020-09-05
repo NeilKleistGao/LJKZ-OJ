@@ -1,7 +1,7 @@
 package bean;
 
+import dao.ACRecDAO;
 import dao.ProblemDAO;
-import dao.SubmissionDAO;
 import entity.Problem;
 import utils.Pagination;
 
@@ -95,6 +95,8 @@ public class ProblemSetBean {
 
     @EJB
     private ProblemDAO problemDAO;
+    @EJB
+    private ACRecDAO acRecDAO;
 
     public Entry[] getEntries() {
         return entries;
@@ -228,14 +230,10 @@ public class ProblemSetBean {
             return;
         }
 
-        try (SubmissionDAO dao = new SubmissionDAO()) {
-            for (int i = 0; i < NUMBER_OF_ENTRIES_IN_PAGE; i++) {
-                this.entries[i].setAccepted(
-                        dao.isAccepted(new String(Base64.getDecoder().decode(map.get("uid").toString())), this.entries[i].getPid()));
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        List list = acRecDAO.getACRecByEmail(new String(Base64.getDecoder().decode(map.get("uid").toString())));
+
+        for (int i = 0; i < NUMBER_OF_ENTRIES_IN_PAGE; i++) {
+            this.entries[i].setAccepted(list.contains(this.entries[i].getPid()));
         }
 
     }

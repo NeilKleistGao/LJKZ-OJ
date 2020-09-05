@@ -1,12 +1,14 @@
 package dao;
 
 import entity.Competition;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+@Mapper
 public interface ICompetitionDAO {
-    public List<Competition> getCompetitionList(int start, int size);
-    public void addCompetition(Competition competition);
-    public Competition getCompetition(String cid);
-    public void addCompetitionProblem(String pid, String cid);
+    List<Competition> getCompetitionList(int start, int size);
+    void addCompetition(Competition competition);
+    Competition getCompetition(String cid);
+    void addCompetitionProblem(String pid, String cid);
 }
