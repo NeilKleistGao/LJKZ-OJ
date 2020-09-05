@@ -1,16 +1,24 @@
 package dao;
 
 import entity.Competition;
+import org.apache.ibatis.session.SqlSession;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 @Stateless
-public class CompetitionDAO extends BasicDAO implements ICompetitionDAO {
-    public CompetitionDAO() throws Exception {
-        super();
+public class CompetitionDAO implements ICompetitionDAO {
+
+
+
+
+    @EJB
+    private  BasicDAO basicDAO;
+    private  SqlSession session;
+    public CompetitionDAO(BasicDAO basicDAO) {
+        session = basicDAO.openSession();
     }
 
     public List<Competition> getCompetitionList(int start, int size) {
@@ -22,7 +30,8 @@ public class CompetitionDAO extends BasicDAO implements ICompetitionDAO {
 
     public void addCompetition(Competition competition) {
         session.insert("addCompetition", competition);
-        this.commit();
+        session.commit();
+        session.close();
     }
 
     public Competition getCompetition(String cid) {
@@ -34,6 +43,7 @@ public class CompetitionDAO extends BasicDAO implements ICompetitionDAO {
         map.put("pid", pid);
         map.put("cid", cid);
         session.insert("addCompetitionProblem", map);
-        this.commit();
+        session.commit();
+        session.close();
     }
 }

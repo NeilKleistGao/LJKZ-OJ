@@ -1,18 +1,25 @@
 package dao;
 
 import entity.ACRec;
+import lombok.Data;
+import org.apache.ibatis.session.SqlSession;
 
+import javax.ejb.EJB;
 import java.util.List;
 
-public class ACRecDAO extends BasicDAO implements IACRecDAO {
+@Data
+public class ACRecDAO implements IACRecDAO {
 
+    @EJB
+    private BasicDAO basicDAO;
+    private SqlSession session;
     public ACRecDAO() throws Exception {
-        super();
+        session = basicDAO.openSession();
     }
-
     public void addACRec(ACRec rec) {
         session.insert("", rec);
-        this.commit();
+        session.commit();
+        session.close();
     }
 
     public List<String> getACRecByEmail(ACRec rec) {

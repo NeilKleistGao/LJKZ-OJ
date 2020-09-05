@@ -1,8 +1,10 @@
 package dao;
 
 import entity.Problem;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+
 
 public interface IProblemDAO {
     public void addProblem(Problem problem);

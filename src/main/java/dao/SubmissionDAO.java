@@ -1,26 +1,33 @@
 package dao;
 
 import entity.Submission;
+import org.apache.ibatis.session.SqlSession;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Stateless
-public class SubmissionDAO extends BasicDAO implements ISubmissionDAO {
+public class SubmissionDAO implements ISubmissionDAO{
+    @EJB
+    private  BasicDAO basicDAO;
+    private SqlSession session;
     public SubmissionDAO() throws Exception {
-        super();
+        session = basicDAO.openSession();
     }
 
-    public void insertSubmission(Submission submission) {
+    public void insert(Submission submission) {
         session.insert("addSubmission", submission);
-        this.commit();
+        session.commit();
+        session.close();
     }
 
     public void updateState(Submission submission) {
         session.update("updateState", submission);
-        this.commit();
+        session.commit();
+        session.close();
     }
 
     public List<Submission> getSubmissionList(int start, int size) {

@@ -1,21 +1,22 @@
 package dao;
 
 import entity.Problem;
+import org.apache.ibatis.session.SqlSession;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Stateless
-public class ProblemDAO extends BasicDAO implements IProblemDAO {
-    ProblemDAO() throws Exception {
-        super();
-    }
+public class ProblemDAO implements IProblemDAO {
 
+    @EJB
+    private  BasicDAO basicDAO;
+    private SqlSession session;
     public void addProblem(Problem problem) {
-        session.insert("addProblem", problem);
-        this.commit();
+        session = basicDAO.openSession();
     }
 
     public Problem getProblem(String pid) {
@@ -25,6 +26,7 @@ public class ProblemDAO extends BasicDAO implements IProblemDAO {
     public void updateProblem(Problem problem) {
         session.update("updateProblem", problem);
         session.commit();
+        session.close();
     }
 
     public int getTotal() {
@@ -38,7 +40,6 @@ public class ProblemDAO extends BasicDAO implements IProblemDAO {
         map.put("size", size);
         map.put("for", searchFor);
         map.put("content", searchContent);
-
         return session.selectList("getProblemList", map);
     }
 }

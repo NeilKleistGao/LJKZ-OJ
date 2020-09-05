@@ -22,6 +22,7 @@ public class RegisterBean {
     private final String EMAIL_PATTERN = "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
     private String email, username, password, confirm;
     private String emailFeedback, usernameFeedback, passwordFeedback, confirmFeedback;
+    UserDAO userDAO = new UserDAO();
 
     public String getConfirm() {
         return confirm;
@@ -81,12 +82,9 @@ public class RegisterBean {
         else {
             this.emailFeedback = "";
         }
-
-        try (UserDAO dao = new UserDAO()) {
-            if (dao.exist(value.toString().trim())) {
+        if (userDAO.exist(value.toString().trim())) {
                 this.emailFeedback = "this email has been used!";
             }
-        }
         catch (Exception e) {
         }
     }
@@ -143,7 +141,7 @@ public class RegisterBean {
                 user.setEmail(this.email);
                 user.setUsername(this.username);
                 user.setPassword(MD5.encrypt(this.password));
-                dao.insert(user);
+                dao.addUser(user);
 
                 return "success";
             }
