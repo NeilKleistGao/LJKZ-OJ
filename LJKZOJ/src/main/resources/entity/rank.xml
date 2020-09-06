@@ -8,17 +8,26 @@
         select * from rank where email = '${email}'
     </select>
 
-    <select id="getRankByCID" resultType="Rank">
-        select * from rank where cid = '${cid}'
+    <select id="getRankByCID" resultType="Rank" parameterType="String">
+        select * from rank where cid = ${cid}
+    </select>
+
+    <select id="getRankCountByCIDLeading" parameterType="Map">
+        select count(email)
+        where cid = '${cid}' and (acNum > ${acNum} or (acNum = ${acNum} and ${penalty} > penalty))
+    </select>
+
+    <select id="getRankCountByCID" parameterType="String">
+        select count(email) where cid = ${cid}
     </select>
 
     <insert id="addRank" parameterType="Rank">
-        insert into rank(cid, email, ac, penalty, rank)
-        values ('${cid}', '${email}', ${ac}, ${penalty}, ${rank})
+        insert into rank(cid, email, ac, penalty, rank, percent)
+        values ('${cid}', '${email}', ${ac}, ${penalty}, ${rank}, ${percent})
     </insert>
 
     <update id="updateRank" parameterType="Rank">
-        update rank set ac = ${ac}, penalty = ${penalty}, rank = ${rank}
+        update rank set ac = ${ac}, penalty = ${penalty}, rank = ${rank}, percent = ${percent}
         where cid = '${cid}' and email = '${email}'
     </update>
 </mapper>

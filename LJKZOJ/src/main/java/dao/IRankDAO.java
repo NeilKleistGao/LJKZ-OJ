@@ -12,4 +12,6 @@ public interface IRankDAO {
     List<Rank> getRankByCID(String cid);
     void addRank(Rank rank);
     void updateRank(Rank rank);
+    int getRankCountByCID(String cid);
+    int getRankCountByCIDLeading(String cid, int acNum, int penalty);
 }

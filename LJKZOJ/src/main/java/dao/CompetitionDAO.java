@@ -14,11 +14,12 @@ public class CompetitionDAO implements ICompetitionDAO {
     @EJB
     private BasicDAO basicDAO;
 
-    public List<Competition> getCompetitionList(int start, int size) {
+    public List<Competition> getCompetitionList(int start, int size, String type) {
         SqlSession session = basicDAO.createSession();
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("start", start);
         map.put("size", size);
+        map.put("type", type);
         return session.selectList("", map);
     }
 
@@ -42,5 +43,11 @@ public class CompetitionDAO implements ICompetitionDAO {
         session.insert("addCompetitionProblem", map);
         session.commit();
         session.close();
+    }
+
+    @Override
+    public int getComTotal() {
+        SqlSession session = basicDAO.createSession();
+        return session.selectOne("getComTotal");
     }
 }

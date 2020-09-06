@@ -5,7 +5,17 @@
 
 <mapper namespace="entity">
     <select id="getCompetitionsList" resultType="Competition" parameterType="Map">
-        select * from competition limit ${start}, ${size}
+        select * from competition
+        <if test="type == 'finished'">
+            where '${now}' >= endTime
+        </if>
+        <if test="type == 'ongoing'">
+            where endTime > '${now}' and '${now}' >= beginTime
+        </if>
+        <if test="type == 'aboutTostart'">
+            where beginTime > '${now}'
+        </if>
+        limit ${start}, ${size}
     </select>
 
     <insert id="addCompetition" parameterType="Competition">
@@ -20,4 +30,8 @@
     <insert id="addCompetitionProblem" parameterType="Map">
         insert into problem_used(cid, pid) values('${cid}', '${pid}')
     </insert>
+
+    <select id="getComTotal" resultType="Integer">
+        select count(cid) from competitions;
+    </select>
 </mapper>

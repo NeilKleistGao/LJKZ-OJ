@@ -5,7 +5,9 @@ import org.apache.ibatis.session.SqlSession;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Stateless
 public class RankDAO implements IRankDAO {
@@ -33,5 +35,21 @@ public class RankDAO implements IRankDAO {
         session.update("updateRank", rank);
         session.commit();
         session.close();
+    }
+
+    @Override
+    public int getRankCountByCID(String cid) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectOne("getRankCountByCID", cid);
+    }
+
+    @Override
+    public int getRankCountByCIDLeading(String cid, int acNum, int penalty) {
+        SqlSession session = basicDAO.createSession();
+        Map<String, Object> map = new HashMap<>();
+        map.put("cid", cid);
+        map.put("acNum", acNum);
+        map.put("penalty", penalty);
+        return session.selectOne("getRankCountByCIDLeading", map);
     }
 }

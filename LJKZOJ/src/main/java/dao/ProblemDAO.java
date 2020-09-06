@@ -48,4 +48,9 @@ public class ProblemDAO implements IProblemDAO {
         map.put("content", searchContent);
         return session.selectList("getProblemList", map);
     }
+
+    @Override
+    public List<Problem> getProblemListInCompetition(int cid) {
+        return null;
+    }
 }

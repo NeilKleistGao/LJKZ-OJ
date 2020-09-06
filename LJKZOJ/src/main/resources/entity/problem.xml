@@ -26,19 +26,23 @@
 
     <insert id="addProblem" parameterType="Problem">
         insert into problems (pid, title, labels, problemDesc, totalSubmit, acSubmit,
-         exampleInput, exampleOutput, competitionOnly, memoryLimit, timeLimit)
+         exampleInput, exampleOutput, competitionOnly, memoryLimit, timeLimit, dataSize)
          values ('${pid}', '${title}', '${labels}', '${problemDesc}', 0, 0, '${exampleInput}', '${exampleOutput}',
-         ${competitionOnly}, ${memoryLimit}, ${timeLimit})
+         ${competitionOnly}, ${memoryLimit}, ${timeLimit}, ${dataSize})
     </insert>
 
     <update id="updateProblem">
         update problems set title = '${title}', labels = '${labels}', problemDesc = '${problemDesc}',
         totalSubmit = ${totalSubmit}, acSubmit = ${acSubmit}, exampleInput = '${exampleInput}',
         exampleOutput = '${exampleOutput}', competitionOnly = ${competitionOnly}, memoryLimit = ${memoryLimit},
-        timeLimit = ${timeLimit} where pid = '${pid}'
+        timeLimit = ${timeLimit}, dataSize = ${dataSize} where pid = '${pid}'
     </update>
 
     <select id="getTotal" resultType="Integer">
         select count(pid) from problems;
+    </select>
+
+    <select id="getProblemsListInCompetition" resultType="Problem" parameterType="String">
+        select * from problems where ${cid} = problem_used.cid and problem_used.pid = problems.pid
     </select>
 </mapper>

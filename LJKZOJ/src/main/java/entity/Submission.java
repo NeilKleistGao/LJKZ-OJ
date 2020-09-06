@@ -18,6 +18,8 @@ public class Submission implements Serializable {
 
     private String state, submitCode;
     private boolean normalSubmit;
+    private int timeUsed, memoryUsed;
+    private String info;
 
     public boolean isNormalSubmit() {
         return normalSubmit;
@@ -65,5 +67,29 @@ public class Submission implements Serializable {
 
     public void setSubmitTime(Date submitTime) {
         this.submitTime = submitTime;
+    }
+
+    public int getMemoryUsed() {
+        return memoryUsed;
+    }
+
+    public int getTimeUsed() {
+        return timeUsed;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public void setMemoryUsed(int memoryUsed) {
+        this.memoryUsed = memoryUsed;
+    }
+
+    public void setTimeUsed(int timeUsed) {
+        this.timeUsed = timeUsed;
     }
 }
