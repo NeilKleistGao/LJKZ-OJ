@@ -16,7 +16,9 @@ public class ProblemDAO implements IProblemDAO {
 
     public void addProblem(Problem problem) {
         SqlSession session = basicDAO.createSession();
-        session = basicDAO.createSession();
+        session.insert("addProblem", problem);
+        session.commit();
+        session.close();
     }
 
     public Problem getProblem(String pid) {

@@ -6,12 +6,12 @@
 <mapper namespace="entity">
     <insert id="addSubmission" parameterType="Submission">
         insert into submissions(email, pid, submitTime, state, normalSubmit)
-        values (${email}, ${pid}, ${submitTime}, ${state}, ${normalSubmit})
+        values ('${email}', '${pid}', '${submitTime}', '${state}', ${normalSubmit})
     </insert>
 
     <update id="updateState" parameterType="Submission">
-        update submissions set state = ${state} where email = ${email} and
-        pid = ${pid} and submitTime = ${submitTime}
+        update submissions set state = '${state}' where email = '${email}' and
+        pid = '${pid}' and submitTime = '${submitTime}'
     </update>
 
     <select id="getSubmissionList" resultType="Submission" parameterType="Map">

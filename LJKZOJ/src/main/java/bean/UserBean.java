@@ -27,7 +27,7 @@ public class UserBean {
     private String uid = "";
     private boolean pass;
     private String oldPassword, newPassword, confirm;
-    private String username, avatar;
+    private String username, avatar = "default.png";
     private String email;
     private String usernameFeedback, passwordFeedback, confirmFeedback;
     private int acNum, waNum, tleNum, mleNum, ceNum, reNum;

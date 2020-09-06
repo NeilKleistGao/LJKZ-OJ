@@ -10,14 +10,14 @@
 
     <insert id="addCompetition" parameterType="Competition">
         insert into competitions(cid, beginTime, endTime, title, creator)
-        values (${cid}, ${beginTime}, ${endTime}, ${title}, ${creator})
+        values ('${cid}', '${beginTime}', '${endTime}', '${title}', '${creator}')
     </insert>
 
     <select id="getCompetitionById" parameterType="Competition" resultType="Competition">
-        select * from competition where cid = ${cid}
+        select * from competition where cid = '${cid}'
     </select>
     
     <insert id="addCompetitionProblem" parameterType="Map">
-        insert into problem_used(cid, pid) values(${cid}, ${pid})
+        insert into problem_used(cid, pid) values('${cid}', '${pid}')
     </insert>
 </mapper>

@@ -9,13 +9,13 @@
     </select>
 
     <insert id="addUser" parameterType="User">
-        insert into users (email, username, password, acNum, waNum, tleNum, mleNum, ceNUm, reNum)
-        values (#{email}, #{username}, #{password}, 0, 0, 0, 0, 0, 0)
+        insert into users (email, username, password, acNum, waNum, tleNum, mleNum, ceNUm, reNum, isAdmin)
+        values ('#{email}', '#{username}', '#{password}', 0, 0, 0, 0, 0, 0, 0)
     </insert>
 
     <update id="updateUser" parameterType="User">
         update users set username = '${username}', password = '${password}', acNum = ${acNum},
-        waNum = ${waNum}, tleNum = ${tleNum}, mleNum = ${mleNum}, ceNum = ${ceNum}, reNum = ${reNum}
+        waNum = ${waNum}, tleNum = ${tleNum}, mleNum = ${mleNum}, ceNum = ${ceNum}, reNum = ${reNum}, isAdmin = ${isAdmin}
         where email = '${email}'
     </update>
 </mapper>

@@ -142,7 +142,7 @@ public class ProblemSetBean {
 
     public void init() {
         this.totalNumber = (problemDAO.getTotal() + NUMBER_OF_ENTRIES_IN_PAGE - 1) / NUMBER_OF_ENTRIES_IN_PAGE;
-        List<Problem> problems = problemDAO.getProblemList(this.pageNumber - 1, NUMBER_OF_ENTRIES_IN_PAGE,
+        List<Problem> problems = problemDAO.getProblemList(this.pageNumber, NUMBER_OF_ENTRIES_IN_PAGE,
                 searchFor, searchContent);
         for (int i = 0; i < problems.size(); i++) {
             this.entries[i] = new Entry();
@@ -235,6 +235,9 @@ public class ProblemSetBean {
         List list = acRecDAO.getACRecByEmail(new String(Base64.getDecoder().decode(map.get("uid").toString())));
 
         for (int i = 0; i < NUMBER_OF_ENTRIES_IN_PAGE; i++) {
+            if (this.entries[i] == null) {
+                break;
+            }
             this.entries[i].setAccepted(list.contains(this.entries[i].getPid()));
         }
 

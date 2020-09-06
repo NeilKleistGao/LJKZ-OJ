@@ -22,11 +22,11 @@ public class CreateProblemBean {
     private String title = "";
     private String problemDesc = "";
     private String labels = "";
-    private String exampleInput = "", exampleOutput = "", dataPath;
+    private String exampleInput = "", exampleOutput = "";
     private boolean competitionOnly = false;
     private boolean update = false;
     private Part file = null;
-    private int timeLimit = 1, memoryLimit = 128;
+    private int timeLimit = 1000, memoryLimit = 65536;
 
     @EJB
     private IProblemDAO problemDAO;
@@ -112,7 +112,7 @@ public class CreateProblemBean {
     }
 
     public void load() {
-        if ("".equals(this.pid)) {
+        if (!"".equals(this.pid)) {
             Problem problem = problemDAO.getProblem(pid);
             this.problemDesc = problem.getProblemDesc();
             this.competitionOnly = problem.isCompetitionOnly();
@@ -160,10 +160,10 @@ public class CreateProblemBean {
         problem.setTimeLimit(this.timeLimit);
 
         if (this.update){
-            problemDAO.addProblem(problem);
+            problemDAO.updateProblem(problem);
         }
         else {
-            problemDAO.updateProblem(problem);
+            problemDAO.addProblem(problem);
         }
 
         return "problems";
