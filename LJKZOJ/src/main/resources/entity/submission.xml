@@ -5,16 +5,34 @@
 
 <mapper namespace="entity">
     <insert id="addSubmission" parameterType="Submission">
-        insert into submissions(email, username, pid, title submitTime, state, normalSubmit, timeUsed, memoryUsed, info)
-        values ('${email}', '${username}' '${pid}', '${title}', '${submitTime}', '${state}', ${normalSubmit}, 0, 0, '')
+        insert into submissions(email, pid, submitTime, state, normalSubmit, timeUsed, memoryUsed, info)
+        values (#{email}, #{pid}, #{submitTime}, #{state}, #{normalSubmit}, 0, 0, '')
     </insert>
 
     <update id="updateState" parameterType="Submission">
-        update submissions set state = '${state}', timeUsed = ${timeUsed}, memoryUsed = ${memoryUsed}, info = '${info}'
-        where email = '${email}' and pid = '${pid}' and submitTime = '${submitTime}'
+        update submissions set state = #{state}, timeUsed = #{timeUsed}, memoryUsed = #{memoryUsed}, info = #{info}
+        where email = #{email} and pid = #{pid} and submitTime = #{submitTime}
     </update>
 
-    <select id="getSubmissionList" resultType="Submission" parameterType="Map">
-        select * from submissions limit ${start}, ${size}
+    <select id="getSubmissionList" resultType="java.util.HashMap" parameterType="java.util.Map">
+        select submissions.*, problems.title, users.username
+        from (submissions, problems, users)
+        limit #{start}, #{size}
+    </select>
+
+    <select id="getSubmitTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from submissions where pid = #{pid}
+    </select>
+
+    <select id="getACTotal" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from submissions where pid = #{pid} and state = 'AC'
+    </select>
+
+    <select id="getUserSubmissionList" resultType="java.lang.String" parameterType="java.lang.String">
+        select state from submissions where email = #{email}
+    </select>
+
+    <select id="getUserACList" parameterType="java.lang.String" resultType="java.lang.String">
+        select pid from submissions where email = #{email} and state = 'AC'
     </select>
 </mapper>

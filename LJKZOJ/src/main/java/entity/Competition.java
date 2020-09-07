@@ -1,15 +1,9 @@
 package entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
-@Table(name = "competitions")
 public class Competition implements Serializable {
-    @Id
     private String cid;
     private Date beginTime, endTime;
     private String title;

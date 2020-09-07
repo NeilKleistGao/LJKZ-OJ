@@ -10,10 +10,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @ManagedBean
 @RequestScoped

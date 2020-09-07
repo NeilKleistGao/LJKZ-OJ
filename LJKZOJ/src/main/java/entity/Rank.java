@@ -1,16 +1,9 @@
 package entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "rank")
 public class Rank implements Serializable {
-    @Id
     private String cid;
-    @Id
     private String email;
     private int ac, penalty;
     private int rank;

@@ -1,16 +1,9 @@
 package bean;
 
-import utils.Entry;
 import utils.Pagination;
 
 import javax.annotation.ManagedBean;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
 
 @ManagedBean
 @RequestScoped
