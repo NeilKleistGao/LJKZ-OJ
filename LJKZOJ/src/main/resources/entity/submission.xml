@@ -5,8 +5,8 @@
 
 <mapper namespace="entity">
     <insert id="addSubmission" parameterType="Submission">
-        insert into submissions(email, pid, submitTime, state, normalSubmit, timeUsed, memoryUsed, info)
-        values ('${email}', '${pid}', '${submitTime}', '${state}', ${normalSubmit}, 0, 0, '')
+        insert into submissions(email, username, pid, title submitTime, state, normalSubmit, timeUsed, memoryUsed, info)
+        values ('${email}', '${username}' '${pid}', '${title}', '${submitTime}', '${state}', ${normalSubmit}, 0, 0, '')
     </insert>
 
     <update id="updateState" parameterType="Submission">

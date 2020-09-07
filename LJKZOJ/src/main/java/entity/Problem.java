@@ -14,7 +14,6 @@ public class Problem implements Serializable {
     private int totalSubmit = 0, acSubmit = 0;
     private boolean competitionOnly;
     private int memoryLimit = 128, timeLimit = 1;
-    private int dataSize = 0;
 
     public int getMemoryLimit() {
         return memoryLimit;
@@ -102,13 +101,5 @@ public class Problem implements Serializable {
 
     public void setLabels(String labels) {
         this.labels = labels;
-    }
-
-    public int getDataSize() {
-        return dataSize;
-    }
-
-    public void setDataSize(int dataSize) {
-        this.dataSize = dataSize;
     }
 }

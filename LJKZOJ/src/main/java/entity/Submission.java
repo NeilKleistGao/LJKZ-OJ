@@ -11,8 +11,10 @@ import java.util.Date;
 public class Submission implements Serializable {
     @Id
     private String email;
+    private String username;
     @Id
     private String pid;
+    private String title;
     @Id
     private Date submitTime;
 
@@ -91,5 +93,21 @@ public class Submission implements Serializable {
 
     public void setTimeUsed(int timeUsed) {
         this.timeUsed = timeUsed;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

@@ -26,16 +26,16 @@
 
     <insert id="addProblem" parameterType="Problem">
         insert into problems (pid, title, labels, problemDesc, totalSubmit, acSubmit,
-         exampleInput, exampleOutput, competitionOnly, memoryLimit, timeLimit, dataSize)
+         exampleInput, exampleOutput, competitionOnly, memoryLimit, timeLimit)
          values ('${pid}', '${title}', '${labels}', '${problemDesc}', 0, 0, '${exampleInput}', '${exampleOutput}',
-         ${competitionOnly}, ${memoryLimit}, ${timeLimit}, ${dataSize})
+         ${competitionOnly}, ${memoryLimit}, ${timeLimit})
     </insert>
 
     <update id="updateProblem">
         update problems set title = '${title}', labels = '${labels}', problemDesc = '${problemDesc}',
         totalSubmit = ${totalSubmit}, acSubmit = ${acSubmit}, exampleInput = '${exampleInput}',
         exampleOutput = '${exampleOutput}', competitionOnly = ${competitionOnly}, memoryLimit = ${memoryLimit},
-        timeLimit = ${timeLimit}, dataSize = ${dataSize} where pid = '${pid}'
+        timeLimit = ${timeLimit} where pid = '${pid}'
     </update>
 
     <select id="getTotal" resultType="Integer">
