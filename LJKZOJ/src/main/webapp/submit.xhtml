@@ -10,14 +10,54 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <h:head>
-    <title>Title</title>
+    <title>LJKZ OJ - submited problems and competitions</title>
+    <ui:include src="components/page_head.xhtml" />
+
 </h:head>
 
 <h:body>
+    <ui:include src="components/navigation.xhtml" />
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="card border-primary col-8">
+                <div class="card-header">
+                    <h2 class="card-title">Submited Problems And Competitions</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Submit Time</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Time Used</th>
+                                <th scope="col">Memory Used</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <ul class="pagination">
+                        <ui:repeat value="#{submit_bean.paginations}" var="pg" varStatus="status">
+                            <li class="#{pg.style}">
+                                <a class="page-link" href="#{pg.link}">#{pg.notation}</a>
+                            </li>
+                        </ui:repeat>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </h:body>
 
 </html>
