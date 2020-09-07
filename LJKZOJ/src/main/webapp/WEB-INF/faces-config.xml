@@ -46,6 +46,30 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 
+    <managed-bean>
+        <managed-bean-name>com_set_bean</managed-bean-name>
+        <managed-bean-class>bean.CompetitionSetBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>com_bean</managed-bean-name>
+        <managed-bean-class>bean.CompetitionBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>create_comp_bean</managed-bean-name>
+        <managed-bean-class>bean.CreateComBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
+    <managed-bean>
+        <managed-bean-name>submit_bean</managed-bean-name>
+        <managed-bean-class>bean.SubmitBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
     <navigation-rule>
         <from-view-id>/register.xhtml</from-view-id>
         <navigation-case>
