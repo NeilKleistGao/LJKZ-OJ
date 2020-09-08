@@ -2,9 +2,12 @@ package bean;
 
 import dao.IProblemDAO;
 import dao.ISubmissionDAO;
+import dao.IUserDAO;
 import entity.Problem;
+import entity.User;
 import utils.Entry;
 import utils.Pagination;
+import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -26,11 +29,14 @@ public class ProblemSetBean {
     private Entry[] entries = new Entry[NUMBER_OF_ENTRIES_IN_PAGE];
     private String searchFor = "title", searchContent = "";
     private Pagination[] paginations = null;
+    private boolean addable = false;
 
     @EJB
     private IProblemDAO problemDAO;
     @EJB
     private ISubmissionDAO submissionDAO;
+    @EJB
+    private IUserDAO userDAO;
 
     public Entry[] getEntries() {
         return entries;
@@ -165,7 +171,11 @@ public class ProblemSetBean {
             return;
         }
 
-        List<String> acList = submissionDAO.getUserACList(new String(Base64.getDecoder().decode(map.get("uid").toString())));
+        String email = new String(Base64.getDecoder().decode(map.get("uid").toString()));
+        User user = userDAO.getUser(email);
+        this.addable = PermissionChecker.getInstance().check(user.getPermissions(), PermissionChecker.PROBLEM_PERMISSION);
+
+        List<String> acList = submissionDAO.getUserACList(email);
 
         for (int i = 0; i < NUMBER_OF_ENTRIES_IN_PAGE; i++) {
             if (this.entries[i] == null) {
@@ -192,5 +202,13 @@ public class ProblemSetBean {
 
     public String create() {
         return "create";
+    }
+
+    public boolean isAddable() {
+        return addable;
+    }
+
+    public void setAddable(boolean addable) {
+        this.addable = addable;
     }
 }

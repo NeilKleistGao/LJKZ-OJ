@@ -44,7 +44,7 @@
                     </h:selectOneMenu>
                     <h:inputText style="display: inline-block; width: 60%" styleClass="form-control" value="#{prob_set_bean.searchContent}"/>
                     <h:commandButton style="margin-left: 1rem;" styleClass="btn btn-outline-info" value="search" action="#{prob_set_bean.search}"/>
-                    <c:if test="#{uid == 'MTIwODM2ODU3N0BxcS5jb20='}">
+                    <c:if test="#{prob_set_bean.addable = true}">
                         <h:commandButton style="margin-left: 1rem;" styleClass="btn btn-outline-warning" value="add" action="${prob_set_bean.create}"/>
                     </c:if>
                 </h:form>
