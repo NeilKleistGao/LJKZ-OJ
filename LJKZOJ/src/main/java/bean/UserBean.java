@@ -5,6 +5,7 @@ import dao.IUserDAO;
 import entity.User;
 import sun.security.validator.ValidatorException;
 import utils.MD5;
+import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
