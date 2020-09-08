@@ -59,4 +59,10 @@ public class SubmissionDAO implements ISubmissionDAO{
         SqlSession session = basicDAO.createSession();
         return session.selectList("getUserACList", email);
     }
+
+    @Override
+    public int getAllSubmitTotal() {
+        SqlSession session = basicDAO.createSession();
+        return session.selectOne("getAllSubmitTotal");
+    }
 }

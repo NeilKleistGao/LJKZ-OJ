@@ -50,7 +50,8 @@ public class ProblemDAO implements IProblemDAO {
     }
 
     @Override
-    public List<Problem> getProblemListInCompetition(int cid) {
-        return null;
+    public List<Problem> getProblemListInCompetition(String cid) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectList("getProblemsListInCompetition", cid);
     }
 }

@@ -8,6 +8,7 @@ import utils.Entry;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import java.util.Date;
 
 @ManagedBean
 @RequestScoped
@@ -23,8 +24,6 @@ public class CompetitionBean {
 
     private Date now;
     long progressNow;
-
-
 
     public Competition getCompetition() {
         return competition;

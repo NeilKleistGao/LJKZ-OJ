@@ -1,12 +1,8 @@
 package bean;
 
-
-
-import dao.CompetitionDAO;
 import dao.ICompetitionDAO;
+import dao.IProblemDAO;
 import entity.Competition;
-import entity.Problem;
-import utils.Entry;
 import utils.Pagination;
 import utils.CompEntry;
 
@@ -17,24 +13,21 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.IOException;
+import java.util.List;
 
 @ManagedBean
 @RequestScoped
 public class CompetitionSetBean {
     private final static int NUMBER_OF_ENTRIES_IN_PAGE = 16;
-
     private int pageNumber;
     private int totalNumber;
     private CompEntry[] compEntries = new CompEntry[NUMBER_OF_ENTRIES_IN_PAGE];
     private String searchFor="Finished";
     private Pagination[] paginations = null;
 
-<<<<<<< HEAD
     @EJB
-    private CompetitionDAO competitionDAO;
+    private ICompetitionDAO competitionDAO;
 
-=======
->>>>>>> f9aaf3417dcc0c9e2d32b5706b5e6e4428535372
     public CompEntry[] getCompEntries() {
         return compEntries;
     }
@@ -63,13 +56,8 @@ public class CompetitionSetBean {
         return searchFor;
     }
 
-<<<<<<< HEAD
-    public void setSearchFor(String searchFor) {
-        this.searchFor = searchFor;
-=======
     public void setSearchFor(String searchfor) {
         this.searchFor = searchfor;
->>>>>>> f9aaf3417dcc0c9e2d32b5706b5e6e4428535372
     }
 
     public Pagination[] getPaginations() {
@@ -80,11 +68,7 @@ public class CompetitionSetBean {
         this.paginations = paginations;
     }
 
-<<<<<<< HEAD
-    private void setupPaginations(){
-=======
     private void setupPagination(){
->>>>>>> f9aaf3417dcc0c9e2d32b5706b5e6e4428535372
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {
@@ -92,7 +76,7 @@ public class CompetitionSetBean {
             this.paginations[0].setStyle("page-item disabled");
         }
         else {
-            this.paginations[0].setLink("/problems.xhtml?page=" + String.valueOf(this.pageNumber - 1));
+            this.paginations[0].setLink("/competitions.xhtml?page=" + String.valueOf(this.pageNumber - 1));
             this.paginations[0].setStyle("page-item");
         }
 
@@ -101,7 +85,7 @@ public class CompetitionSetBean {
             this.paginations[this.paginations.length - 1].setStyle("page-item disabled");
         }
         else {
-            this.paginations[this.paginations.length - 1].setLink("/problems.xhtml?page=" + String.valueOf(this.pageNumber + 1));
+            this.paginations[this.paginations.length - 1].setLink("/competitions.xhtml?page=" + String.valueOf(this.pageNumber + 1));
             this.paginations[this.paginations.length - 1].setStyle("page-item");
         }
 
@@ -129,7 +113,7 @@ public class CompetitionSetBean {
                 this.paginations[i].setStyle("page-item activate");
             }
             else {
-                this.paginations[i].setLink("/problems.xhtml?page=" + String.valueOf(j));
+                this.paginations[i].setLink("/competitions.xhtml?page=" + String.valueOf(j));
                 this.paginations[i].setStyle("page-item");
             }
         }
@@ -163,22 +147,18 @@ public class CompetitionSetBean {
             this.paginations[i] = new Pagination();
         }
 
-        this.setupPaginations();
+        this.setupPagination();
     }
 
     public void CompStateChange(ValueChangeEvent e){
         searchFor = e.getNewValue().toString();
-
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext ex = context.getExternalContext();
 
         try {
-            ex.redirect(
-                    "/LJKZOJ-1.0-SNAPSHOT/problems.xhtml?page=1&for="
-                            + searchFor);
+            ex.redirect("/LJKZOJ-1.0-SNAPSHOT/competitions.xhtml?page=1&for=" + searchFor);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
-
 }

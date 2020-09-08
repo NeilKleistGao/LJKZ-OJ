@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="entity">
+    <select id="getProblemById" resultType="Problem" parameterType="java.lang.String">
+        select * from problems where pid = #{pid}
+    </select>
+
+    <select id="getProblemList" parameterType="Map" resultType="Problem">
+        select * from problems where not competitionOnly
+        <if test="content!=''">
+            <if test="for=='title'">
+                and title like concat('%', #{content}, '%')
+            </if>
+            <if test="for=='labels'">
+                and labels like concat('%', #{content}, '%')
+            </if>
+            <if test="for=='problemDesc'">
+                and problemDesc like concat('%', #{content}#, '%')
+            </if>
+        </if>
+        limit ${start}, ${size}
+    </select>
+
+    <insert id="addProblem" parameterType="Problem">
+        insert into problems (pid, title, labels, problemDesc, totalSubmit, acSubmit,
+         exampleInput, exampleOutput, competitionOnly, memoryLimit, timeLimit)
+         values (#{pid}, #{title}, #{labels}, #{problemDesc}, 0, 0, #{exampleInput}, #{exampleOutput},
+         ${competitionOnly}, ${memoryLimit}, ${timeLimit})
+    </insert>
+
+    <update id="updateProblem">
+        update problems set title = #{title}, labels = #{labels}, problemDesc = #{problemDesc},
+        totalSubmit = #{totalSubmit}, acSubmit = #{acSubmit}, exampleInput = #{exampleInput},
+        exampleOutput = #{exampleOutput}, competitionOnly = ${competitionOnly}, memoryLimit = ${memoryLimit},
+        timeLimit = ${timeLimit} where pid = #{pid}
+    </update>
+
+    <select id="getTotal" resultType="java.lang.Integer">
+        select count(pid) from problems;
+    </select>
+
+    <select id="getProblemsListInCompetition" resultType="Problem" parameterType="java.lang.String">
+        select * from problems where #{cid} = problem_used.cid and problem_used.pid = problems.pid
+    </select>
+</mapper>

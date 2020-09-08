@@ -1,23 +1,44 @@
 package bean;
 
+import dao.IProblemDAO;
+import dao.ISubmissionDAO;
+import entity.Problem;
+import entity.Submission;
+import entity.User;
 import utils.Pagination;
+import utils.SubmitEntry;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 @ManagedBean
 @RequestScoped
 
 public class SubmitBean {
+    private static final int NUMBER_OF_ENTRIES_IN_PAG = 16;
     private String title;
     private String name;
     private int memoryUsed;
     private int timeUsed;
 
-
+    @EJB
+    private ISubmissionDAO submissionDAO;
     private int pageNumber;
     private int totalNumber;
     private Pagination[] paginations = null;
+
+    private SubmitEntry[] submitEntries = null;
+
+    /*@EJB
+    private Problem problems;
+    @EJB
+    private Submission submissions;
+    @EJB
+    private User users;*/
 
     public int getPageNumber() {
         return pageNumber;
@@ -43,11 +64,52 @@ public class SubmitBean {
         this.paginations = paginations;
     }
 
-    public void init(){
-
+    public SubmitEntry[] getSubmitEntries() {
+        return submitEntries;
     }
 
-    private void setupPaginations() {
+    public void setSubmitEntries(SubmitEntry[] submitEntries) {
+        this.submitEntries = submitEntries;
+    }
+
+    public void init(){
+        this.totalNumber = (submissionDAO.getAllSubmitTotal() + NUMBER_OF_ENTRIES_IN_PAG - 1) / NUMBER_OF_ENTRIES_IN_PAG;
+        List<HashMap<String, Object>> submit = submissionDAO.getSubmissionList(0,NUMBER_OF_ENTRIES_IN_PAG);
+        for (int i = 0; i < submit.size(); i++){
+            this.submitEntries[i] = new SubmitEntry();
+            HashMap<String, Object> submitMap = submit.get(i);
+            this.submitEntries[i].setEmail(submitMap.get("submissions.email").toString());
+            this.submitEntries[i].setPid(submitMap.get("submissions.pid").toString());
+            this.submitEntries[i].setSubmitTime((Date)submitMap.get("submissions.submitTimed"));
+            this.submitEntries[i].setState(submitMap.get("submissions.state").toString());
+            this.submitEntries[i].isNormalSubmit((boolean)submitMap.get("submissions.normalSubmit"));
+            this.submitEntries[i].setTimeUsed((int)submitMap.get("submissions.timeUsed"));
+            this.submitEntries[i].setMemoryUsed((int)submitMap.get("submissions.memoryUsed"));
+            this.submitEntries[i].setInfo(submitMap.get("submissions.info").toString());
+//            this.submitEntries[i].setTitle(submitMap.get("problems.title").toString());
+            //TODO:
+            this.submitEntries[i].setUsername(submitMap.get("users.username").toString());
+        }
+
+
+
+        if (this.totalNumber == 0) {
+            this.totalNumber = 1;
+        }
+        if (this.totalNumber < 5) {
+            this.paginations = new Pagination[this.totalNumber + 2];
+        }
+        else {
+            this.paginations = new Pagination[7];
+        }
+        for (int i = 0; i < this.paginations.length; i++) {
+            this.paginations[i] = new Pagination();
+        }
+
+        this.setupPagination();
+    }
+
+    private void setupPagination() {
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {
@@ -55,7 +117,7 @@ public class SubmitBean {
             this.paginations[0].setStyle("page-item disabled");
         }
         else {
-            this.paginations[0].setLink("/problems.xhtml?page=" + String.valueOf(this.pageNumber - 1));
+            this.paginations[0].setLink("/submit.xhtml?page=" + String.valueOf(this.pageNumber - 1));
             this.paginations[0].setStyle("page-item");
         }
 
@@ -64,7 +126,7 @@ public class SubmitBean {
             this.paginations[this.paginations.length - 1].setStyle("page-item disabled");
         }
         else {
-            this.paginations[this.paginations.length - 1].setLink("/problems.xhtml?page=" + String.valueOf(this.pageNumber + 1));
+            this.paginations[this.paginations.length - 1].setLink("/submit.xhtml?page=" + String.valueOf(this.pageNumber + 1));
             this.paginations[this.paginations.length - 1].setStyle("page-item");
         }
 
@@ -92,7 +154,7 @@ public class SubmitBean {
                 this.paginations[i].setStyle("page-item activate");
             }
             else {
-                this.paginations[i].setLink("/problems.xhtml?page=" + String.valueOf(j));
+                this.paginations[i].setLink("/submit.xhtml?page=" + String.valueOf(j));
                 this.paginations[i].setStyle("page-item");
             }
         }
