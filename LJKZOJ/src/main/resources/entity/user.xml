@@ -4,18 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="entity">
-    <select id="getUserByEmail" resultType="User" parameterType="String">
+    <select id="getUserByEmail" resultType="User" parameterType="java.lang.String">
         select * from users where email = #{email};
     </select>
 
     <insert id="addUser" parameterType="User">
-        insert into users (email, username, password, acNum, waNum, tleNum, mleNum, ceNUm, reNum, isAdmin)
-        values ('#{email}', '#{username}', '#{password}', 0, 0, 0, 0, 0, 0, 0)
+        insert into users (email, username, password, permissions)
+        values (#{email}, #{username}, #{password}, 0)
     </insert>
 
     <update id="updateUser" parameterType="User">
-        update users set username = '${username}', password = '${password}', acNum = ${acNum},
-        waNum = ${waNum}, tleNum = ${tleNum}, mleNum = ${mleNum}, ceNum = ${ceNum}, reNum = ${reNum}, isAdmin = ${isAdmin}
-        where email = '${email}'
+        update users set username = #{username}, password = #{password}, permissions = #{permissions}
+        where email = #{email}
     </update>
 </mapper>

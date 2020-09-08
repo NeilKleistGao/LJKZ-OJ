@@ -8,11 +8,6 @@ import utils.Entry;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
 
 @ManagedBean
 @RequestScoped

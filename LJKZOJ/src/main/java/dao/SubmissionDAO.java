@@ -28,11 +28,35 @@ public class SubmissionDAO implements ISubmissionDAO{
         session.close();
     }
 
-    public List<Submission> getSubmissionList(int start, int size) {
+    public List<HashMap<String, Object>> getSubmissionList(int start, int size) {
         SqlSession session = basicDAO.createSession();
         Map<String, Integer> map = new HashMap<>();
         map.put("start", start);
         map.put("size", size);
         return session.selectList("getSubmissionList", map);
+    }
+
+    @Override
+    public int getSubmitTotal(String pid) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectOne("getSubmitTotal", pid);
+    }
+
+    @Override
+    public int getACtotal(String pid) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectOne("getACTotal", pid);
+    }
+
+    @Override
+    public List<String> getUserSubmissionList(String email) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectList("getUserSubmissionList", email);
+    }
+
+    @Override
+    public List<String> getUserACList(String email) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectList("getUserACList", email);
     }
 }

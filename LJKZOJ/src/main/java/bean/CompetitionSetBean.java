@@ -17,10 +17,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @ManagedBean
 @RequestScoped
@@ -33,9 +29,12 @@ public class CompetitionSetBean {
     private String searchFor="Finished";
     private Pagination[] paginations = null;
 
+<<<<<<< HEAD
     @EJB
     private CompetitionDAO competitionDAO;
 
+=======
+>>>>>>> f9aaf3417dcc0c9e2d32b5706b5e6e4428535372
     public CompEntry[] getCompEntries() {
         return compEntries;
     }
@@ -64,8 +63,13 @@ public class CompetitionSetBean {
         return searchFor;
     }
 
+<<<<<<< HEAD
     public void setSearchFor(String searchFor) {
         this.searchFor = searchFor;
+=======
+    public void setSearchFor(String searchfor) {
+        this.searchFor = searchfor;
+>>>>>>> f9aaf3417dcc0c9e2d32b5706b5e6e4428535372
     }
 
     public Pagination[] getPaginations() {
@@ -76,7 +80,11 @@ public class CompetitionSetBean {
         this.paginations = paginations;
     }
 
+<<<<<<< HEAD
     private void setupPaginations(){
+=======
+    private void setupPagination(){
+>>>>>>> f9aaf3417dcc0c9e2d32b5706b5e6e4428535372
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {

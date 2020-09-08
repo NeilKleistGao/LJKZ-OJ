@@ -1,7 +1,6 @@
 package bean;
 
 import dao.IUserDAO;
-import dao.UserDAO;
 import entity.User;
 import sun.security.validator.ValidatorException;
 import utils.MD5;

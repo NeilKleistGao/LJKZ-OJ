@@ -22,7 +22,6 @@
     <mappers>
         <mapper resource="entity/user.xml"/>
         <mapper resource="entity/problem.xml"/>
-        <mapper resource="entity/acrec.xml"/>
         <mapper resource="entity/competition.xml"/>
         <mapper resource="entity/submission.xml"/>
         <mapper resource="entity/rank.xml"/>

@@ -2,8 +2,6 @@ package bean;
 
 import dao.IProblemDAO;
 import dao.ISubmissionDAO;
-import dao.ProblemDAO;
-import dao.SubmissionDAO;
 import entity.Problem;
 import entity.Submission;
 
@@ -65,7 +63,6 @@ public class ProblemBean {
         submission.setNormalSubmit(!problem.isCompetitionOnly());
         submissionDAO.insert(submission);
 
-        this.problem.setTotalSubmit(this.problem.getTotalSubmit() + 1);
         problemDAO.updateProblem(this.problem);
 
         return "success";

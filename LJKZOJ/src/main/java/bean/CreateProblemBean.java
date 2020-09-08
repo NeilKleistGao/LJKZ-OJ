@@ -1,10 +1,8 @@
 package bean;
 
 import dao.IProblemDAO;
-import dao.ProblemDAO;
 import entity.Problem;
 import utils.MD5;
-import utils.Zip;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -12,8 +10,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.io.File;
 
 @ManagedBean
 @RequestScoped
@@ -137,14 +133,7 @@ public class CreateProblemBean {
 
         if (this.file != null) {
             try (InputStream stream = this.file.getInputStream()) {
-                File dataFile = new File("../data", pid);
-                if (dataFile.exists()) {
-                    dataFile.delete();
-                    dataFile = new File("../data", pid);
-                }
-
-                Files.copy(stream, dataFile.toPath());
-                Zip.unzip(pid);
+                // TODO:
             }
             catch (IOException e) {
                 e.printStackTrace();
