@@ -1,20 +1,16 @@
-package kafka;
+package myKafka;
 
-import entity.Problem;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.util.Properties;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 
-
-@Stateless
+@Singleton
 public class SubmissionProducer implements ISubmissionProducer {
-    @EJB
-
-    public void properties() {
+    KafkaProducer<String, Submission> producer;
+    public SubmissionProducer() {
         Properties properties = new Properties();
         //kafka服务
         properties.put("bootstrap.servers","localhost:9092");
@@ -24,8 +20,16 @@ public class SubmissionProducer implements ISubmissionProducer {
         properties.put("retries","0");
         properties.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");
         properties.put("value.serializer","SubmissionJsonSerializer");
+        producer = new KafkaProducer<>(properties);
+    }
 
-        KafkaProducer<String, SubmissionProducer> producer = new KafkaProducer<>(properties);
+    @Override
+    public void send() {
 
+    }
+
+    public void send(String topic, String key, Submission value){
+        producer.send(new ProducerRecord<String, Submission>(topic, value));
+        producer.close();
     }
 }

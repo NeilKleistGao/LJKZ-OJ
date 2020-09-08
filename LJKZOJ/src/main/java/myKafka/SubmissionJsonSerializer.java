@@ -1,4 +1,4 @@
-package kafka;
+package myKafka;
 import org.apache.kafka.common.serialization.Serializer;
 import com.alibaba.fastjson.JSON;
 import java.util.Map;

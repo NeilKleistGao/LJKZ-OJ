@@ -1,13 +1,14 @@
-package kafka;
+package myKafka;
+
+import java.util.Date;
 
 public class Submission {
     private String email;
-    private int pid;
-    private int lid;
-    private String submitTime;
+    private String pid;
+    private Date submitTime;
     private String code;
-    private String memoryLimit;
-    private String timeLimit;
+    private int memoryLimit;
+    private int timeLimit;
 
     public String getEmail() {
         return email;
@@ -17,27 +18,20 @@ public class Submission {
         this.email = email;
     }
 
-    public int getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
-    public int getLid() {
-        return lid;
-    }
 
-    public void setLid(int lid) {
-        this.lid = lid;
-    }
-
-    public String getSubmitTime() {
+    public Date getSubmitTime() {
         return submitTime;
     }
 
-    public void setSubmitTime(String submitTime) {
+    public void setSubmitTime(Date submitTime) {
         this.submitTime = submitTime;
     }
 
@@ -49,19 +43,19 @@ public class Submission {
         this.code = code;
     }
 
-    public String getMemoryLimit() {
+    public int getMemoryLimit() {
         return memoryLimit;
     }
 
-    public void setMemoryLimit(String memoryLimit) {
+    public void setMemoryLimit(int memoryLimit) {
         this.memoryLimit = memoryLimit;
     }
 
-    public String getTimeLimit() {
+    public int getTimeLimit() {
         return timeLimit;
     }
 
-    public void setTimeLimit(String timeLimit) {
+    public void setTimeLimit(int timeLimit) {
         this.timeLimit = timeLimit;
     }
 
