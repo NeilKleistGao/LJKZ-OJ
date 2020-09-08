@@ -20,7 +20,7 @@
     <ui:include src="components/page_head.xhtml" />
     <f:metadata>
         <f:viewParam name="page" id="page" value="#{comp_set_bean.pageNumber}"/>
-        <f:viewParam name="for" id="for" value="#{comp_set_bean.searchfor}"/>
+        <f:viewParam name="for" id="for" value="#{comp_set_bean.searchFor}"/>
         <f:event type="preRenderView" listener="#{comp_set_bean.init}"/>
     </f:metadata>
 
@@ -29,63 +29,65 @@
 <h:body>
     <ui:include src="components/navigation.xhtml" />
     <div class="container-fluid">
-        <div class="card border-primary col-8">
-            <div class="card-header">
-                <h2 class="card-title">Competition Set</h2>
-                <br/>
-                <div class="row">
-                    <h:form styleClass="form-group">
-                        <h:selectOneMenu styleClass="custom-select-sm" style="display: inline-block;margin-right: 1rem" valueChangeListener="#{comp_set_bean.CompStateChange}">
-                            <f:selectItem itemValue="allcomp" itemLabel="All"/>
-                            <f:selectItem itemValue="finished" itemLabel="Finished"/>
-                            <f:selectItem itemValue="onging" itemLabel="Ongoing"/>
-                            <f:selectItem itemValue="aboutToStart" itemLabel="About To Start"/>
-                        </h:selectOneMenu>
-                    </h:form>
-                    <h:form>
-                        <!--<c:if test="#{uid == 'MTIwODM2ODU3N0BxcS5jb20='}">-->
-                        <h:commandButton style="margin-left: 1rem;" styleClass="btn btn-outline-warning" value="add" action="creatcomp"/>
-                        <!--</c:if>-->
-                    </h:form>
+        <div class="row justify-content-center">
+            <div class="card border-primary col-8">
+                <div class="card-header">
+                    <h2 class="card-title">Competition Set</h2>
+                    <br/>
+                    <div class="row">
+                        <h:form styleClass="form-group">
+                            <h:selectOneMenu styleClass="custom-select-sm" style="display: inline-block;margin-right: 1rem" valueChangeListener="#{comp_set_bean.CompStateChange}">
+                                <f:selectItem itemValue="allcomp" itemLabel="All"/>
+                                <f:selectItem itemValue="finished" itemLabel="Finished"/>
+                                <f:selectItem itemValue="onging" itemLabel="Ongoing"/>
+                                <f:selectItem itemValue="aboutToStart" itemLabel="About To Start"/>
+                            </h:selectOneMenu>
+                        </h:form>
+                        <h:form>
+                            <c:if test="#{uid == 'MTIwODM2ODU3N0BxcS5jb20='}">
+                                <h:commandButton style="margin-left: 1rem;" styleClass="btn btn-outline-warning" value="add" action="creatcomp"/>
+                            </c:if>
+                        </h:form>
+                    </div>
                 </div>
-            </div>
-            <div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">Title</th>
-                            <th scope="col">StartT</th>
-                            <th scope="col">OverT</th>
-                            <th scope="col">Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <ui:repeat var="comp" value="#{comp_set_bean.compEntries}" varStatus="status">
+                <div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
                             <tr>
-                                <td>
-<!--                                    <c:if test="#{comp_set_bean.searchfor}!='About To Start'">-->
-                                        <a href="competition.xhtml?pid=#{comp.cid}">
-                                            #{comp.title}
-                                        </a>
-<!--                                    </c:if>-->
-                                </td>
-                                <td>#{comp.startT}</td>
-                                <td>#{comp.overT}</td>
-                                <td>#{comp.name}</td>
+                                <th scope="col">Title</th>
+                                <th scope="col">StartTime</th>
+                                <th scope="col">OverTime</th>
+                                <th scope="col">Creator</th>
                             </tr>
-                        </ui:repeat>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer">
-                    <ul class="pagination">
-                        <ui:repeat value="#{comp_set_bean.paginations}" var="pg" varStatus="status">
-                            <li class="#{pg.style}">
-                                <a class="page-link" href="#{pg.link}">#{pg.notation}</a>
-                            </li>
-                        </ui:repeat>
-                    </ul>
+                            </thead>
+                            <tbody>
+                            <ui:repeat var="comp" value="#{comp_set_bean.compEntries}" varStatus="status">
+                                <tr>
+                                    <td>
+                                        <c:if test="#{comp_set_bean.searchFor != 'About To Start'}">
+                                            <a href="competition.xhtml?pid=#{comp.cid}">
+                                                #{comp.title}
+                                            </a>
+                                        </c:if>
+                                    </td>
+                                    <td>#{comp.startT}</td>
+                                    <td>#{comp.overT}</td>
+                                    <td>#{comp.name}</td>
+                                </tr>
+                            </ui:repeat>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <ul class="pagination">
+                            <ui:repeat value="#{comp_set_bean.paginations}" var="pg" varStatus="status">
+                                <li class="#{pg.style}">
+                                    <a class="page-link" href="#{pg.link}">#{pg.notation}</a>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

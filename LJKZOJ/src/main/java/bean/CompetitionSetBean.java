@@ -19,14 +19,14 @@ public class CompetitionSetBean {
     private int pageNumber;
     private int totalNumber;
     private CompEntry[] compEntries = new CompEntry[NUMBER_OF_ENTRIES_IN_PAGE];
-    private String searchfor="Finished";
+    private String searchFor="Finished";
     private Pagination[] paginations = null;
 
-    public CompEntry[] getcompEntries() {
+    public CompEntry[] getCompEntries() {
         return compEntries;
     }
 
-    public void setcompEntries(CompEntry[] compEntries) {
+    public void setCompEntries(CompEntry[] compEntries) {
         this.compEntries = compEntries;
     }
 
@@ -46,12 +46,12 @@ public class CompetitionSetBean {
         this.totalNumber = totalNumber;
     }
 
-    public String getSearchfor() {
-        return searchfor;
+    public String getSearchFor() {
+        return searchFor;
     }
 
-    public void setSearchfor(String searchfor) {
-        this.searchfor = searchfor;
+    public void setSearchFor(String searchfor) {
+        this.searchFor = searchfor;
     }
 
     public Pagination[] getPaginations() {
@@ -62,7 +62,7 @@ public class CompetitionSetBean {
         this.paginations = paginations;
     }
 
-    private void setuppagination(){
+    private void setupPagination(){
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {
@@ -118,7 +118,7 @@ public class CompetitionSetBean {
     }
 
     public void CompStateChange(ValueChangeEvent e){
-        searchfor = e.getNewValue().toString();
+        searchFor = e.getNewValue().toString();
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext ex = context.getExternalContext();
@@ -126,7 +126,7 @@ public class CompetitionSetBean {
         try {
             ex.redirect(
                     "/LJKZOJ-1.0-SNAPSHOT/problems.xhtml?page=1&for="
-                            + searchfor);
+                            + searchFor);
         } catch (IOException exception) {
             exception.printStackTrace();
         }

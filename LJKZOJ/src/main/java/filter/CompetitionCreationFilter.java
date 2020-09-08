@@ -1,33 +1,33 @@
 package filter;
 
-import dao.ICompetitionDAO;
-import entity.Competition;
+import dao.IUserDAO;
+import entity.User;
+import utils.PermissionChecker;
 
 import javax.ejb.EJB;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Date;
+import java.util.Base64;
 
-public class CompetitionFilter implements Filter {
+public class CompetitionCreationFilter implements Filter {
     @EJB
-    private ICompetitionDAO competitionDAO;
+    private IUserDAO userDAO;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest)request;
         HttpServletResponse httpResponse = (HttpServletResponse)response;
+        HttpSession map = httpRequest.getSession(false);
 
-        String cid = httpRequest.getParameter("cid");
-        if (cid == null) {
-            cid = "";
-        }
-        Competition competition = competitionDAO.getCompetition(cid);
+        if (map.getAttribute("uid") == null) {
+            String email = new String(Base64.getDecoder().decode((String)map.getAttribute("uid")));
+            User user = userDAO.getUser(email);
 
-        if (competition != null) {
-            Date now = new Date();
-            if (now.before(competition.getBeginTime())) {
+            if (user != null &&
+                    PermissionChecker.getInstance().check(user.getPermissions(), PermissionChecker.COMPETITION_PERMISSION)) {
                 httpResponse.sendRedirect("/LJKZOJ-1.0-SNAPSHOT/competitions.xhtml");
             }
         }
