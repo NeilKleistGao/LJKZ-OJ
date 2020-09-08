@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Created by IntelliJ IDEA.
+  User: neilkleistgao
+  Date: 2020/8/23
+  Time: 上午12:28
+-->
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jstl/core">
+
+<h:head>
+    <f:metadata>
+        <f:viewParam name="pid" value="#{problem_bean.problem.pid}" required="true"/>
+        <f:event type="preRenderView" listener="#{problem_bean.init}"/>
+    </f:metadata>
+    <title>LJKZ OJ - #{problem_bean.problem.title}</title>
+    <ui:include src="components/page_head.xhtml"/>
+    <h:outputScript library="js" name="showdown.min.js"/>
+
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+</h:head>
+
+<h:body>
+    <ui:include src="components/navigation.xhtml"/>
+
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="card border-primary col-8" style="min-height: 40rem;">
+                <div class="card-header">
+                    <h3 class="card-title">#{problem_bean.problem.title}</h3>
+                    <h5 class="text-muted">#{problem_bean.problem.labels},
+                        Time Limit: #{problem_bean.problem.timeLimit}s, Memory Limit: #{problem_bean.problem.memoryLimit}MB</h5>
+                </div>
+                <div class="card-body">
+                    <h4>Problem Description</h4>
+                    <br/>
+                    <p id="markdown">#{problem_bean.problem.problemDesc}</p>
+                    <hr class="mb-4"/>
+                    <div class="row">
+                        <div class="col-4">
+                            <h5>Input Example</h5>
+                            <blockquote class="blockquote">
+                                <p class="mb-1">#{problem_bean.problem.exampleInput}</p>
+                            </blockquote>
+                        </div>
+                        <div class="col-1">
+                        </div>
+                        <div class="col-4">
+                            <h5>Output Example</h5>
+                            <blockquote class="blockquote">
+                                <p class="mb-1">#{problem_bean.problem.exampleOutput}</p>
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <c:if test="#{not empty uid}">
+                    <div class="card-footer text-center">
+                        <a class="btn btn-outline-success" href="#" id="show">sumbit</a>
+                    </div>
+                </c:if>
+
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <div class="modal" id="modal" style="min-height: 30rem;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Submit Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h:form styleClass="form-group">
+                        <h:inputTextarea styleClass="form-control" rows="30" value="#{problem_bean.code}"/>
+                        <br/>
+                        <h:commandLink styleClass="btn btn-outline-success" value="submit" action="#{problem_bean.submit}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let text = document.getElementById("markdown").innerHTML;
+        let converter = new showdown.Converter();
+        let html = converter.makeHtml(text);
+        document.getElementById("markdown").innerHTML = html;
+
+        let show_btn = document.getElementById("show");
+        let modal = document.getElementById("modal")
+        show_btn.addEventListener("click", () => {
+            $("#modal").modal("show");
+        });
+    </script>
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+            },
+            showProcessingMessages: false,
+            messageStyle: "none"
+        });
+    </script>
+
+</h:body>
+
+</html>
