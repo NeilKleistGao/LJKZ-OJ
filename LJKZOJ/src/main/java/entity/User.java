@@ -1,18 +1,11 @@
 package entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "users")
 public class User implements Serializable {
-    @Id
     private String email;
     private String username, password;
-    private Integer acNum = 0, waNum = 0, tleNum = 0, mleNum = 0, reNum = 0, ceNum = 0;
-    private Boolean isAdmin = false;
+    private Integer permissions = 0;
 
     public void setEmail(String email) {
         this.email = email;
@@ -38,59 +31,11 @@ public class User implements Serializable {
         return this.password;
     }
 
-    public Integer getAcNum() {
-        return acNum;
+    public Integer getPermissions() {
+        return permissions;
     }
 
-    public Integer getCeNum() {
-        return ceNum;
-    }
-
-    public Integer getMleNum() {
-        return mleNum;
-    }
-
-    public Integer getReNum() {
-        return reNum;
-    }
-
-    public Integer getTleNum() {
-        return tleNum;
-    }
-
-    public Integer getWaNum() {
-        return waNum;
-    }
-
-    public void setAcNum(Integer acNum) {
-        this.acNum = acNum;
-    }
-
-    public void setCeNum(Integer ceNum) {
-        this.ceNum = ceNum;
-    }
-
-    public void setMleNum(Integer mleNum) {
-        this.mleNum = mleNum;
-    }
-
-    public void setReNum(Integer reNum) {
-        this.reNum = reNum;
-    }
-
-    public void setTleNum(Integer tleNum) {
-        this.tleNum = tleNum;
-    }
-
-    public void setWaNum(Integer waNum) {
-        this.waNum = waNum;
-    }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+    public void setPermissions(Integer permissions) {
+        this.permissions = permissions;
     }
 }

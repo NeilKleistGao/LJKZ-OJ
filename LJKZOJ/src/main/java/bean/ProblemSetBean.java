@@ -1,11 +1,13 @@
 package bean;
 
-import dao.ACRecDAO;
-import dao.IACRecDAO;
 import dao.IProblemDAO;
-import dao.ProblemDAO;
+import dao.ISubmissionDAO;
+import dao.IUserDAO;
 import entity.Problem;
+import entity.User;
+import utils.Entry;
 import utils.Pagination;
+import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -21,84 +23,20 @@ import java.util.Map;
 @RequestScoped
 public class ProblemSetBean {
     private final static int NUMBER_OF_ENTRIES_IN_PAGE = 16;
-    public static class Entry {
-        private String title;
-        private String pid;
-        private String labels;
-        private boolean accepted;
-        private int acSubmit, totalSubmit;
-
-        public String getPid() {
-            return pid;
-        }
-
-        public String getTableClass() {
-            if (accepted) {
-                return "table-primary";
-            }
-            return "table-active";
-        }
-
-        public boolean isAccepted() {
-            return accepted;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getLabels() {
-            return labels;
-        }
-
-        public String getAcPercent() {
-            if (this.totalSubmit == 0) {
-                return "0%";
-            }
-
-            float val = (float)this.acSubmit / (float)this.totalSubmit * 100.f;
-            return val + "%";
-        }
-
-        public void setAcSubmit(int acSubmit) {
-            this.acSubmit = acSubmit;
-        }
-
-        public int getTotalSubmit() {
-            return totalSubmit;
-        }
-
-        public void setAccepted(boolean accepted) {
-            this.accepted = accepted;
-        }
-
-        public void setPid(String pid) {
-            this.pid = pid;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public void setLabels(String labels) {
-            this.labels = labels;
-        }
-
-        public void setTotalSubmit(int totalSubmit) {
-            this.totalSubmit = totalSubmit;
-        }
-    }
 
     private int pageNumber;
     private int totalNumber;
     private Entry[] entries = new Entry[NUMBER_OF_ENTRIES_IN_PAGE];
     private String searchFor = "title", searchContent = "";
     private Pagination[] paginations = null;
+    private boolean addable = false;
 
     @EJB
     private IProblemDAO problemDAO;
     @EJB
-    private IACRecDAO acRecDAO;
+    private ISubmissionDAO submissionDAO;
+    @EJB
+    private IUserDAO userDAO;
 
     public Entry[] getEntries() {
         return entries;
@@ -148,9 +86,10 @@ public class ProblemSetBean {
             this.entries[i] = new Entry();
             Problem problem = problems.get(i);
             this.entries[i].setPid(problem.getPid());
-            this.entries[i].setAcSubmit(problem.getAcSubmit());
             this.entries[i].setLabels(problem.getLabels());
             this.entries[i].setTitle(problem.getTitle());
+            this.entries[i].setAcSubmit(submissionDAO.getACtotal(problem.getPid()));
+            this.entries[i].setTotalSubmit(submissionDAO.getSubmitTotal(problem.getPid()));
         }
 
         this.setAccepted();
@@ -232,13 +171,17 @@ public class ProblemSetBean {
             return;
         }
 
-        List list = acRecDAO.getACRecByEmail(new String(Base64.getDecoder().decode(map.get("uid").toString())));
+        String email = new String(Base64.getDecoder().decode(map.get("uid").toString()));
+        User user = userDAO.getUser(email);
+        this.addable = PermissionChecker.getInstance().check(user.getPermissions(), PermissionChecker.PROBLEM_PERMISSION);
+
+        List<String> acList = submissionDAO.getUserACList(email);
 
         for (int i = 0; i < NUMBER_OF_ENTRIES_IN_PAGE; i++) {
             if (this.entries[i] == null) {
                 break;
             }
-            this.entries[i].setAccepted(list.contains(this.entries[i].getPid()));
+            this.entries[i].setAccepted(acList.contains(this.entries[i].getPid()));
         }
 
     }
@@ -259,5 +202,13 @@ public class ProblemSetBean {
 
     public String create() {
         return "create";
+    }
+
+    public boolean isAddable() {
+        return addable;
+    }
+
+    public void setAddable(boolean addable) {
+        this.addable = addable;
     }
 }

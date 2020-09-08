@@ -1,21 +1,11 @@
 package entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
-@Table(name = "submissions")
 public class Submission implements Serializable {
-    @Id
     private String email;
-    private String username;
-    @Id
     private String pid;
-    private String title;
-    @Id
     private Date submitTime;
 
     private String state, submitCode;
@@ -93,21 +83,5 @@ public class Submission implements Serializable {
 
     public void setTimeUsed(int timeUsed) {
         this.timeUsed = timeUsed;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getUsername() {
-        return username;
     }
 }

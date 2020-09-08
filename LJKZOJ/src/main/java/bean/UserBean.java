@@ -1,10 +1,11 @@
 package bean;
 
+import dao.ISubmissionDAO;
 import dao.IUserDAO;
-import dao.UserDAO;
 import entity.User;
 import sun.security.validator.ValidatorException;
 import utils.MD5;
+import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.io.File;
 
@@ -30,11 +32,13 @@ public class UserBean {
     private String username, avatar = "default.png";
     private String email;
     private String usernameFeedback, passwordFeedback, confirmFeedback;
-    private int acNum, waNum, tleNum, mleNum, ceNum, reNum;
+    private int acNum = 0, waNum = 0, tleNum = 0, mleNum = 0, ceNum = 0, reNum = 0;
     private Part file = null;
 
     @EJB
     private IUserDAO userDAO;
+    @EJB
+    private ISubmissionDAO submissionDAO;
 
     public String getUid() {
         return uid;
@@ -184,12 +188,29 @@ public class UserBean {
         }
 
         this.username = user.getUsername();
-        this.acNum = user.getAcNum();
-        this.waNum = user.getWaNum();
-        this.tleNum = user.getTleNum();
-        this.mleNum = user.getMleNum();
-        this.ceNum = user.getCeNum();
-        this.reNum = user.getReNum();
+        List<String> stateList = submissionDAO.getUserSubmissionList(this.email);
+        for (String state : stateList) {
+            switch (state) {
+                case "AC":
+                    this.acNum++;
+                    break;
+                case "WA":
+                    this.waNum++;
+                    break;
+                case "TLE":
+                    this.tleNum++;
+                    break;
+                case "MLE":
+                    this.mleNum++;
+                    break;
+                case "RE":
+                    this.reNum++;
+                    break;
+                case "CE":
+                    this.ceNum++;
+                    break;
+            }
+        }
     }
 
     public void validateUsername(FacesContext context, UIComponent component, Object value) throws ValidatorException {

@@ -11,6 +11,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
 
@@ -36,6 +37,7 @@
                     <h:outputText value="#{user_bean.username}"/>
                     <small class="text-muted"><h:outputText value="#{user_bean.email}"/></small>
                 </h2>
+
                 <br/>
                 <h3>STATISTIC<h:outputText styleClass="text-muted" value="(#{user_bean.sum} in total)"/></h3>
                 <div style="width: 40rem; height: 30rem" id="statistic"></div>

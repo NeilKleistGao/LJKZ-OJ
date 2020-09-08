@@ -30,8 +30,18 @@
     </filter>
     
     <filter>
-        <filter-name>Admin Filter</filter-name>
-        <filter-class>filter.AdminFilter</filter-class>
+        <filter-name>Problem Creation Filter</filter-name>
+        <filter-class>filter.ProblemCreationFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>Competition Creation Filter</filter-name>
+        <filter-class>filter.CompetitionCreationFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>Competition Filter</filter-name>
+        <filter-class>filter.CompetitionFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -41,7 +51,17 @@
     </filter-mapping>
 
     <filter-mapping>
-        <filter-name>Admin Filter</filter-name>
+        <filter-name>Problem Creation Filter</filter-name>
         <url-pattern>/create.xhtml</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>Competition Creation Filter</filter-name>
+        <url-pattern>/createcomp.xhtml</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>Competition Filter</filter-name>
+        <url-pattern>/competition.xhtml</url-pattern>
     </filter-mapping>
 </web-app>

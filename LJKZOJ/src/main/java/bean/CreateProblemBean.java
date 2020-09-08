@@ -1,19 +1,21 @@
 package bean;
 
 import dao.IProblemDAO;
-import dao.ProblemDAO;
 import entity.Problem;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import utils.MD5;
-import utils.Zip;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.io.File;
+import org.apache.http.entity.FileEntity;
 
 @ManagedBean
 @RequestScoped
@@ -136,15 +138,21 @@ public class CreateProblemBean {
         problem.setCompetitionOnly(this.competitionOnly);
 
         if (this.file != null) {
-            try (InputStream stream = this.file.getInputStream()) {
-                File dataFile = new File("../data", pid);
-                if (dataFile.exists()) {
-                    dataFile.delete();
-                    dataFile = new File("../data", pid);
+            try (InputStream stream = file.getInputStream()) {
+                File file = new File("../temp");
+                if (file.exists()) {
+                    file.delete();
                 }
+                file = new File("../temp", this.pid);
+                Files.copy(stream, file.toPath());
 
-                Files.copy(stream, dataFile.toPath());
-                Zip.unzip(pid);
+                HttpClient client = new DefaultHttpClient();
+                HttpPost post = new HttpPost("http://localhost:8081/Rest-1.0-SNAPSHOT/upload?pid=" + this.pid);
+                FileEntity entity = new FileEntity(file);
+                post.setEntity(entity);
+
+                client.execute(post);
+                file.delete();
             }
             catch (IOException e) {
                 e.printStackTrace();
