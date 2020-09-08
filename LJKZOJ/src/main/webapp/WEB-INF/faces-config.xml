@@ -47,13 +47,13 @@
     </managed-bean>
 
     <managed-bean>
-        <managed-bean-name>com_set_bean</managed-bean-name>
+        <managed-bean-name>comp_set_bean</managed-bean-name>
         <managed-bean-class>bean.CompetitionSetBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 
     <managed-bean>
-        <managed-bean-name>com_bean</managed-bean-name>
+        <managed-bean-name>comp_bean</managed-bean-name>
         <managed-bean-class>bean.CompetitionBean</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>

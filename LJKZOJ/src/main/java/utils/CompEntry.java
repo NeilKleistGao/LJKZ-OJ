@@ -7,7 +7,7 @@ public class CompEntry{
     private String cid;
     private Date startT;
     private Date overT;
-    private String name;
+    private String creator;
 
 
     public String getCid() {
@@ -42,11 +42,11 @@ public class CompEntry{
         this.overT = overT;
     }
 
-    public String getName() {
-        return name;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

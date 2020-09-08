@@ -19,43 +19,42 @@
         <div class="row justify-content-center">
             <div class="border-primary col-8" style="min-height: 40rem;">
                 <div class="card-header">
-                    <h3 class="card-title">comp_title</h3>
+                    <h3 class="card-title">#{comp_set_bean.compEntries.title}</h3>
                     <div class="row justify-content-center">
-                        <h5>startT</h5>
-                        <div class="progress-bar-animated"></div>
-                        <h5>overT</h5>
+                        <h5>#{comp_set_bean.compEntries.startT}</h5>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progress" aria-valuenow="#{comp_bean.progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <h5>#{comp_set_bean.compEntries.overT}</h5>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="card">
-                            <div class="card-header">
-                                    <h4 class="card-title">Problems</h4>
-                            </div>
-                            <div class="card-body">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Problem</th>
-                                        <th scope="col">ACpercent</th>
+                        <div class="col-8">
+                            <h4 class="card-title">Problems</h4>
+                            <br/>
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Problem</th>
+                                    <th scope="col">ACpercent</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ui:repeat value="#{comp_bean.entries}" var="pro">
+                                    <tr class="#{pro.tableClass}">
+                                        <td>
+                                            <a href="problem.xhtml?pid=#{pro.pid}">
+                                                #{pro.title}
+                                            </a>
+                                        </td>
+                                        <td>#{pro.acPercent}</td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    <ui:repeat value="#{comp_bean.entries}" var="pro">
-                                        <tr class="#{pro.tableClass}">
-                                            <td>
-                                                <a href="problem.xhtml?pid=#{pro.pid}">
-                                                    #{pro.title}
-                                                </a>
-                                            </td>
-                                            <td>#{pro.acPercent}</td>
-                                        </tr>
-                                    </ui:repeat>
-                                    </tbody>
-                                </table>
-                            </div>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="list-group">
+                        <div class="list-group col-2 mr-auto" style="margin-left: 2rem">
                             <h3>Yours</h3>
                             <h4>
                                 ACNum:
