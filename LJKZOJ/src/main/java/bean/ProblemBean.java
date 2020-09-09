@@ -4,6 +4,7 @@ import dao.IProblemDAO;
 import dao.ISubmissionDAO;
 import entity.Problem;
 import entity.Submission;
+import org.apache.kafka.clients.producer.ProducerRecord;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -62,6 +63,15 @@ public class ProblemBean {
         submission.setSubmitTime(new Date());
         submission.setNormalSubmit(!problem.isCompetitionOnly());
         submissionDAO.insert(submission);
+
+        myKafka.Submission submissionPro = new myKafka.Submission();
+
+        submissionPro.setEmail(new String(Base64.getDecoder().decode(map.get("uid").toString())));
+        submissionPro.setPid(problem.getPid());
+        submissionPro.setSubmitTime(new Date(System.currentTimeMillis()));
+        submissionPro.setCode(this.code);
+        submissionPro.setMemoryLimit(problem.getMemoryLimit());
+        submissionPro.setTimeLimit(problem.getTimeLimit());
 
         problemDAO.updateProblem(this.problem);
 
