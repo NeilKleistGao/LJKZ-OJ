@@ -63,7 +63,11 @@
                                         #{prosubmit.username}
                                     </a>
                                 </td>
-                                <td>#{prosubmit.state}</td>
+                                <td>
+                                    <a href="detail.xhtml?pid=#{prosubmit.pid}">
+                                        #{prosubmit.state}
+                                    </a>
+                                </td>
                                 <td>#{prosubmit.timeUsed}</td>
                                 <td>#{prosubmit.memoryUsed}</td>
                             </tr>

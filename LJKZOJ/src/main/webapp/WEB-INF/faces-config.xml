@@ -70,6 +70,12 @@
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
 
+    <managed-bean>
+        <managed-bean-name>detail_bean</managed-bean-name>
+        <managed-bean-class>bean.DetailBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+
     <navigation-rule>
         <from-view-id>/register.xhtml</from-view-id>
         <navigation-case>

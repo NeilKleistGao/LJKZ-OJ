@@ -4,6 +4,7 @@ import entity.Submission;
 import org.apache.ibatis.annotations.Mapper;
 
 import javax.ejb.Local;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface ISubmissionDAO {
     List<String> getUserSubmissionList(String email);
     List<String> getUserACList(String email);
     int getAllSubmitTotal();
+    Submission getSubmission(String email, String pid, Date submitTime);
 }

@@ -8,7 +8,7 @@ public class Submission implements Serializable {
     private String pid;
     private Date submitTime;
 
-    private String state, submitCode;
+    private String state;
     private boolean normalSubmit;
     private int timeUsed, memoryUsed;
     private String info;
@@ -45,16 +45,8 @@ public class Submission implements Serializable {
         return state;
     }
 
-    public String getSubmitCode() {
-        return submitCode;
-    }
-
     public void setState(String state) {
         this.state = state;
-    }
-
-    public void setSubmitCode(String submitCode) {
-        this.submitCode = submitCode;
     }
 
     public void setSubmitTime(Date submitTime) {

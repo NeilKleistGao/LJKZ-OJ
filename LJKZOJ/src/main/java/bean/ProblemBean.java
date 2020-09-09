@@ -59,7 +59,6 @@ public class ProblemBean {
         submission.setEmail(new String(Base64.getDecoder().decode(map.get("uid").toString())));
         submission.setPid(problem.getPid());
         submission.setState("wait");
-        submission.setSubmitCode(this.code);
         submission.setSubmitTime(new Date());
         submission.setNormalSubmit(!problem.isCompetitionOnly());
         submissionDAO.insert(submission);

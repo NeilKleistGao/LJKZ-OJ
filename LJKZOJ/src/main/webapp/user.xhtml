@@ -40,7 +40,10 @@
 
                 <br/>
                 <h3>STATISTIC<h:outputText styleClass="text-muted" value="(#{user_bean.sum} in total)"/></h3>
-                <div style="width: 40rem; height: 30rem" id="statistic"></div>
+                <div class="row justify-content-center">
+                    <div style="width: 40rem; height: 30rem" id="statistic"></div>
+                    <div style="width: 40rem; height: 30rem" id="Linechart"></div>
+                </div>
             </div>
         </div>
         <br/>
@@ -102,7 +105,6 @@
         </div>
     </div>
     <br/>
-
     <script>
         let chart = echarts.init(document.getElementById("statistic"));
         let option = {
@@ -145,6 +147,98 @@
 
         chart.setOption(option);
     </script>
+    <script>
+        let myChart = echarts.init(document.getElementById('Linechart'));
+        let colors = ['#5793f3', '#d14a61', '#675bba'];
+        let option = {
+            color: colors,
+            tooltip: {
+                trigger: 'none',
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            legend: {
+                data:['Rank For Each Competition', 'RankRC For Each Competition']
+            },
+            grid: {
+                top: '4%',
+                bottom: '3%'
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    axisLine: {
+                        onZero: false,
+                        lineStyle: {
+                            color: colors[1]
+                        }
+                    },
+                    axisPointer: {
+                        label: {
+                            formatter: function (params) {
+                                return 'Rank For Each Competition  ' + params.value
+                                    + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                            }
+                        }
+                    },
+                    data: [1,2,3,4,5]
+                },
+                {
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    axisLine: {
+                        onZero: false,
+                        lineStyle: {
+                            color: colors[0]
+                        }
+                    },
+                    axisPointer: {
+                        label: {
+                            formatter: function (params) {
+                                return 'RankPercent For Each Competition  ' + params.value
+                                    + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
+                            }
+                        }
+                    },
+                    data: [1,2,3,4,5]
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: 'Rank For Each Competition',
+                    type: 'line',
+                    xAxisIndex: 1,
+                    smooth: true,
+                    data:{
+                        value:[#{user_bean.chartEntries.Rank}],
+                        name:"Rank"
+                    }
+                },
+                {
+                    name: 'RankPercent For Each Competition',
+                    type: 'line',
+                    smooth: true,
+                    data: {
+                        value:[#{user_bean.chartEntries.Percent}],
+                        name:"Percent"
+                    }
+                }
+            ]
+        };
+
+    </script>
+
 </h:body>
 
 </html>
