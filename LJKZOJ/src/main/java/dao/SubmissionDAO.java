@@ -5,6 +5,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,5 +65,15 @@ public class SubmissionDAO implements ISubmissionDAO{
     public int getAllSubmitTotal() {
         SqlSession session = basicDAO.createSession();
         return session.selectOne("getAllSubmitTotal");
+    }
+
+    @Override
+    public Submission getSubmission(String email, String pid, Date submitTime) {
+        SqlSession  session = basicDAO.createSession();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("email", email);
+        map.put("pid", pid);
+        map.put("submitTime", submitTime);
+        return session.selectOne("getSubmission", map);
     }
 }

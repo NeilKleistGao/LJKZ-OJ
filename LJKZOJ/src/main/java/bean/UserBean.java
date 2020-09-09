@@ -1,11 +1,13 @@
 package bean;
 
+import dao.IProblemDAO;
+import dao.IRankDAO;
 import dao.ISubmissionDAO;
 import dao.IUserDAO;
+import entity.Rank;
 import entity.User;
 import sun.security.validator.ValidatorException;
 import utils.MD5;
-import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -39,6 +41,41 @@ public class UserBean {
     private IUserDAO userDAO;
     @EJB
     private ISubmissionDAO submissionDAO;
+
+
+
+/*chart*/
+    @EJB
+    private IProblemDAO problemDAO;
+    private IRankDAO rankDAO;
+    private EntryForChart[] chartEntries;
+    private static class EntryForChart{
+        private int rank;
+        private float percent;
+        public int getRank() {
+            return rank;
+        }
+        public void setRank(int rank) {
+            this.rank = rank;
+        }
+        public float getPercent() {
+            return percent;
+        }
+        public void setPercent(float percent) {
+            this.percent = percent;
+        }
+    }
+    public EntryForChart[] getChartEntries() {
+        return chartEntries;
+    }
+    public void setChartEntries(EntryForChart[] chartEntries) {
+        this.chartEntries = chartEntries;
+    }
+/*chart end*/
+
+
+
+
 
     public String getUid() {
         return uid;
@@ -211,6 +248,8 @@ public class UserBean {
                     break;
             }
         }
+        /*chart*/
+        getForChart();
     }
 
     public void validateUsername(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -297,4 +336,18 @@ public class UserBean {
             }
         }
     }
+
+
+/*chart*/
+    public void getForChart(){
+        List<Rank> rankForChart = rankDAO.getRankByEmail(email);
+        for (int i = 0; i < rankForChart.size(); i++){
+            this.chartEntries[i] = new EntryForChart();
+            Rank rank = rankForChart.get(i);
+            this.chartEntries[i].setRank(rank.getRank());
+            this.chartEntries[i].setPercent(rank.getPercent());
+        }
+    }
+    /*chart end*/
+
 }

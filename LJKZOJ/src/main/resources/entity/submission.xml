@@ -41,4 +41,8 @@
     <select id="getAllSubmitTotal" resultType="java.lang.Integer">
         select count(*) from submissions
     </select>
+
+    <select id="getSubmission" parameterType="java.util.HashMap" resultType="Submission">
+        select * from submissions where email = #{email} and pid = #{pid} and submitTime = #{submitTime}
+    </select>
 </mapper>
