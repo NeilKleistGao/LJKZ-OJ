@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <properties resource="mysql.properties"/>
+    <typeAliases>
+        <package name="entity"/>
+    </typeAliases>
+
+    <environments default="ljkz">
+        <environment id="ljkz">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${database_driver}"/>
+                <property name="url" value="${database_url}"/>
+                <property name="username" value="${database_username}"/>
+                <property name="password" value="${database_password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="entity/user.xml"/>
+        <mapper resource="entity/problem.xml"/>
+        <mapper resource="entity/competition.xml"/>
+        <mapper resource="entity/submission.xml"/>
+        <mapper resource="entity/rank.xml"/>
+    </mappers>
+</configuration>

@@ -1,26 +1,32 @@
 package bean;
 
-
+import dao.ICompetitionDAO;
+import dao.IProblemDAO;
+import entity.Competition;
 import utils.Pagination;
 import utils.CompEntry;
 
 import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.IOException;
+import java.util.List;
 
 @ManagedBean
 @RequestScoped
 public class CompetitionSetBean {
     private final static int NUMBER_OF_ENTRIES_IN_PAGE = 16;
-
     private int pageNumber;
     private int totalNumber;
     private CompEntry[] compEntries = new CompEntry[NUMBER_OF_ENTRIES_IN_PAGE];
     private String searchFor="Finished";
     private Pagination[] paginations = null;
+
+    @EJB
+    private ICompetitionDAO competitionDAO;
 
     public CompEntry[] getCompEntries() {
         return compEntries;
@@ -70,7 +76,7 @@ public class CompetitionSetBean {
             this.paginations[0].setStyle("page-item disabled");
         }
         else {
-            this.paginations[0].setLink("/problems.xhtml?page=" + String.valueOf(this.pageNumber - 1));
+            this.paginations[0].setLink("/competitions.xhtml?page=" + String.valueOf(this.pageNumber - 1));
             this.paginations[0].setStyle("page-item");
         }
 
@@ -79,7 +85,7 @@ public class CompetitionSetBean {
             this.paginations[this.paginations.length - 1].setStyle("page-item disabled");
         }
         else {
-            this.paginations[this.paginations.length - 1].setLink("/problems.xhtml?page=" + String.valueOf(this.pageNumber + 1));
+            this.paginations[this.paginations.length - 1].setLink("/competitions.xhtml?page=" + String.valueOf(this.pageNumber + 1));
             this.paginations[this.paginations.length - 1].setStyle("page-item");
         }
 
@@ -107,29 +113,52 @@ public class CompetitionSetBean {
                 this.paginations[i].setStyle("page-item activate");
             }
             else {
-                this.paginations[i].setLink("/problems.xhtml?page=" + String.valueOf(j));
+                this.paginations[i].setLink("/competitions.xhtml?page=" + String.valueOf(j));
                 this.paginations[i].setStyle("page-item");
             }
         }
     }
 
     public void init(){
+        this.totalNumber = (competitionDAO.getComTotal() + NUMBER_OF_ENTRIES_IN_PAGE - 1) / NUMBER_OF_ENTRIES_IN_PAGE;
+        List<Competition> competitions = competitionDAO.getCompetitionList(this.pageNumber, NUMBER_OF_ENTRIES_IN_PAGE,
+                searchFor);
+        for (int i = 0; i < competitions.size(); i++) {
+            this.compEntries[i] = new CompEntry();
+            Competition competition = competitions.get(i);
+            this.compEntries[i].setCid(competition.getCid());
+            this.compEntries[i].setTitle(competition.getTitle());
+            this.compEntries[i].setStartT(competition.getBeginTime());
+            this.compEntries[i].setOverT(competition.getEndTime());
+            this.compEntries[i].setCreator(competition.getCreator());
+        }
 
+
+        if (this.totalNumber == 0) {
+            this.totalNumber = 1;
+        }
+        if (this.totalNumber < 5) {
+            this.paginations = new Pagination[this.totalNumber + 2];
+        }
+        else {
+            this.paginations = new Pagination[7];
+        }
+        for (int i = 0; i < this.paginations.length; i++) {
+            this.paginations[i] = new Pagination();
+        }
+
+        this.setupPagination();
     }
 
     public void CompStateChange(ValueChangeEvent e){
         searchFor = e.getNewValue().toString();
-
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext ex = context.getExternalContext();
 
         try {
-            ex.redirect(
-                    "/LJKZOJ-1.0-SNAPSHOT/problems.xhtml?page=1&for="
-                            + searchFor);
+            ex.redirect("/LJKZOJ-1.0-SNAPSHOT/competitions.xhtml?page=1&for=" + searchFor);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
-
 }

@@ -16,4 +16,5 @@ public interface ISubmissionDAO {
     int getACtotal(String pid);
     List<String> getUserSubmissionList(String email);
     List<String> getUserACList(String email);
+    int getAllSubmitTotal();
 }

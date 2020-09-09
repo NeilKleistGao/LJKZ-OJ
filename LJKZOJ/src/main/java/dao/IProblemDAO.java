@@ -13,5 +13,5 @@ public interface IProblemDAO {
     void updateProblem(Problem problem);
     int getTotal();
     List<Problem> getProblemList(int start, int size, String searchFor, String searchContent);
-    List<Problem> getProblemListInCompetition(int cid);
+    List<Problem> getProblemListInCompetition(String cid);
 }
