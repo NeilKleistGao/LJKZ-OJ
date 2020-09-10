@@ -43,7 +43,6 @@ int get_file_count(const char *root)
         {
             continue;
         }
-        //printf("%s%s/n",root,ptr->d_name);
         //如果是目录，则递归调用 get_file_count函数
 
         if(ptr->d_type == DT_DIR)
@@ -81,36 +80,37 @@ int run_all(ini_result iniResult){
     └── test1.cpp
      *
      * */
-    std::string workspace = "/home/geray/data";
-    std::string indir = workspace + "/problem/" + iniResult.pid + "/in";
-    std::string outdir = workspace + "/problem/" + iniResult.pid + "/out";
-    std::string execdir = "/home/geray/code/"+iniResult.exec;
+
+    std::string workspace = "/ljkz_data";
+    std::string indir = workspace + "/" + iniResult.pid;
+    std::string outdir = workspace + "/" + iniResult.pid;
+    std::string execdir = "/ljkz_code/"+iniResult.exec;
     run_in runIn;
     int count = get_file_count(indir.c_str());
-    for(int i=1;i<=count;i++){
+    for(int i=1;i<=count / 2;i++){
         std::string in = indir+"/"+std::to_string(i)+".in";
         std::string out = outdir + "/"+ std::to_string(i)+".out";
+//        std::cout << iniResult.outFileTem << std::endl;
+//        std::cout << out << std::endl;
         runIn.stderr_file=iniResult.errFileTem;
         runIn.stdout_file=iniResult.outFileTem;
         runIn.stdin_file= in;
         runIn.stdexec_file=execdir;
         run_result runResult = run(runIn);
+        if(runResult.mem>memoryuse)memoryuse=runResult.mem;
+        if(runResult.time>timeuse)timeuse=runResult.time;
         int isAc;
         if(runResult.exitCode!=EX_SUCCESS){
-            clear_env(iniResult.temDir);
+
             return runResult.exitCode;
         }else{
-            if(runResult.mem>memoryuse)memoryuse=runResult.mem;
-            if(runResult.time>timeuse)timeuse=runResult.time;
             isAc = file_compare(runIn.stdout_file.c_str(),out.c_str());
             clearFile(runIn.stdout_file.c_str());//清空out文件方便输出
             if(!isAc){
-                clear_env(iniResult.temDir);
                 return EX_WA;
             }
         }
     }
-    clear_env(iniResult.temDir);
     return EX_AC;
 }
 int main(int argc, char * argv[]) {
@@ -119,14 +119,10 @@ int main(int argc, char * argv[]) {
     // 解析参数，./parse -m -t -p : programid
     parse_opt(argc,argv);
     ini_result iniResult = init_env();
-///    com_result comResult = compile(iniResult);
-//    if(comResult.isCompiled==0){
-//        printf("CE\n");
-//        return 0;
-//    }
     int ex_code =  run_all(iniResult);
-    printf("ex_code : %d\n"
-           "timeuse: %d\n"
-           "memoryuse: %d\n",ex_code,timeuse,memoryuse);
+    clear_env(iniResult.temDir);
+    printf("ex_code=%d&"
+           "timeuse=%d&"
+           "memoryuse=%d",ex_code,timeuse,memoryuse);
     return ex_code;
 }

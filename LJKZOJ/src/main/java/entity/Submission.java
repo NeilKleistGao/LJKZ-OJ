@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Submission implements Serializable {
+    private String sid;
     private String email;
     private String pid;
     private Date submitTime;
@@ -75,5 +76,13 @@ public class Submission implements Serializable {
 
     public void setTimeUsed(int timeUsed) {
         this.timeUsed = timeUsed;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public String getSid() {
+        return sid;
     }
 }

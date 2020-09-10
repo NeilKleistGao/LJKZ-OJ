@@ -16,12 +16,13 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <h:head>
-    <title>LJKZ OJ - submited problems and competitions</title>
+    <title>LJKZ OJ - Submissions</title>
     <ui:include src="components/page_head.xhtml" />
 
     <f:metadata>
         <f:viewParam name="page" id="page" value="#{submit_bean.pageNumber}"/>
         <f:event type="preValidate" listener="#{submit_bean.init}"/>
+        <f:event type="preRenderView" listener="#{submit_bean.setupPagination}"/>
     </f:metadata>
 
 </h:head>
@@ -32,10 +33,10 @@
         <div class="row justify-content-center">
             <div class="card border-primary col-8">
                 <div class="card-header">
-                    <h2 class="card-title">Submited Problems And Competitions</h2>
+                    <h2 class="card-title">Submissions</h2>
                 </div>
                 <div class="card-body">
-                    <table class="table-hover">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">Title</th>
@@ -46,32 +47,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <ui:repeat var="prosubmit" value="#{submit_bean.submitEntries}" varStatus="status">
-                            <tr>
-                                <td>
-                                    <c:if test="#{prosubmit.normalSubmit}">
-                                        <a href="problem.xhtml?pid=#{prosubmit.pid}">
-                                            #{prosubmit.title}
+                            <ui:repeat var="prosubmit" value="#{submit_bean.submitEntries}" varStatus="status">
+                                <tr class="table-active">
+                                    <td>
+                                        <h:outputLink value="problem.xhtml?pid=#{prosubmit.pid}" rendered="#{prosubmit.normalSubmit}">#{prosubmit.title}</h:outputLink>
+                                        <h:outputText value="#{prosubmit.title}" rendered="#{!prosubmit.normalSubmit}"/>
+                                    </td>
+                                    <td>
+                                        <a href="user.xhtml?pid=#{prosubmit.pid}">
+                                            #{prosubmit.username}
                                         </a>
-                                    </c:if>
-                                    <c:otherwise>
-                                        #{prosubmit.title}
-                                    </c:otherwise>
-                                </td>
-                                <td>
-                                    <a href="user.xhtml?pid=#{prosubmit.pid}">
-                                        #{prosubmit.username}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="detail.xhtml?pid=#{prosubmit.pid}">
-                                        #{prosubmit.state}
-                                    </a>
-                                </td>
-                                <td>#{prosubmit.timeUsed}</td>
-                                <td>#{prosubmit.memoryUsed}</td>
-                            </tr>
-                        </ui:repeat>
+                                    </td>
+                                    <td>
+                                        <h:outputLink value="detail.xhtml?sid=#{prosubmit.sid}" rendered="#{prosubmit.normalSubmit}">#{prosubmit.state}</h:outputLink>
+                                        <h:outputText value="#{prosubmit.state}" rendered="#{!prosubmit.normalSubmit}"/>
+                                    </td>
+                                    <td>#{prosubmit.timeUsed}</td>
+                                    <td>#{prosubmit.memoryUsed}</td>
+                                </tr>
+                            </ui:repeat>
                         </tbody>
                     </table>
                 </div>

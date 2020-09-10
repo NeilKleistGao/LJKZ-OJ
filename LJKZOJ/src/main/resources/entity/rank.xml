@@ -30,4 +30,8 @@
         update rank set ac = #{ac}, penalty = #{penalty}, rank = #{rank}, percent = #{percent}
         where cid = #{cid} and email = #{email}
     </update>
+
+    <select id="getRank" parameterType="Rank" resultType="Rank">
+        select * from rank where cid = #{cid} and email = #{email}
+    </select>
 </mapper>

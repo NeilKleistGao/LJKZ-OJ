@@ -5,7 +5,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
-import java.awt.event.ActionEvent;
 
 @ManagedBean
 @RequestScoped

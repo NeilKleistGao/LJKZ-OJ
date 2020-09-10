@@ -18,6 +18,7 @@
 <h:head>
     <f:metadata>
         <f:viewParam name="pid" value="#{problem_bean.problem.pid}" required="true"/>
+        <f:viewParam name="cid" value="#{problem_bean.cid}"/>
         <f:event type="preRenderView" listener="#{problem_bean.init}"/>
     </f:metadata>
     <title>LJKZ OJ - #{problem_bean.problem.title}</title>

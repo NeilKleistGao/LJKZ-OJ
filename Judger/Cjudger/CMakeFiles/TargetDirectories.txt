@@ -1,0 +1,3 @@
+/home/neilkleistgao/Downloads/Cjudger-CJudgr-dev/CMakeFiles/rebuild_cache.dir
+/home/neilkleistgao/Downloads/Cjudger-CJudgr-dev/CMakeFiles/parse.dir
+/home/neilkleistgao/Downloads/Cjudger-CJudgr-dev/CMakeFiles/edit_cache.dir

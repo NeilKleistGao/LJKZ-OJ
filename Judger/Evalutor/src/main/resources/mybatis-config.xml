@@ -21,6 +21,6 @@
     <mappers>
         <mapper resource="mapper/UserMapper.xml"/>
         <mapper resource="mapper/submissionMapper.xml"/>
-
+        <mapper resource="mapper/RankMapper.xml"/>
     </mappers>
 </configuration>

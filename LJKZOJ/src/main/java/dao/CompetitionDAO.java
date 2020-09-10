@@ -20,7 +20,7 @@ public class CompetitionDAO implements ICompetitionDAO {
         map.put("start", start);
         map.put("size", size);
         map.put("type", type);
-        return session.selectList("", map);
+        return session.selectList("getCompetitionsList", map);
     }
 
     public void addCompetition(Competition competition) {

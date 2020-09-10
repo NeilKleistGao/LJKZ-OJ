@@ -3,12 +3,14 @@ package myKafka;
 import java.util.Date;
 
 public class Submission {
+    private String sid;
     private String email;
     private String pid;
     private Date submitTime;
     private String code;
     private int memoryLimit;
     private int timeLimit;
+    private String cid;
 
     public String getEmail() {
         return email;
@@ -59,4 +61,19 @@ public class Submission {
         this.timeLimit = timeLimit;
     }
 
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
 }

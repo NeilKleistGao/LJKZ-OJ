@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Mapper.RankMapper">
+    <update id="updateRank" parameterType="pojo.RankPojo">
+        update rank set ac = #{ac}, penalty = #{penalty} where email = #{email} and cid = #{cid}
+    </update>
+    <select id="getRank" parameterType="pojo.RankPojo" resultType="pojo.RankPojo">
+        select * from rank where email = #{email} and cid = #{cid}
+    </select>
+</mapper>

@@ -12,6 +12,7 @@ public class SubmitEntry {
     private String info;
     private String username;
     private String title;
+    private String sid;
 
     public String getEmail() {
         return email;
@@ -92,5 +93,17 @@ public class SubmitEntry {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getSid() {
+        return sid;
+    }
+
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public boolean isNormalSubmit() {
+        return normalSubmit;
     }
 }

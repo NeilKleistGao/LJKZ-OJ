@@ -52,4 +52,10 @@ public class RankDAO implements IRankDAO {
         map.put("penalty", penalty);
         return session.selectOne("getRankCountByCIDLeading", map);
     }
+
+    @Override
+    public Rank getRank(Rank rank) {
+        SqlSession session = basicDAO.createSession();
+        return session.selectOne("getRank", rank);
+    }
 }

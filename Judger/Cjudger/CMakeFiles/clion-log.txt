@@ -1,0 +1,7 @@
+/usr/jetbrains/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE= -G "CodeBlocks - Unix Makefiles" /home/neilkleistgao/Downloads/Cjudger-CJudgr-dev
+CMake Error at CMakeLists.txt:1 (cmake_minimum_required):
+  CMake 3.17 or higher is required.  You are running version 3.15.3
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/neilkleistgao/Downloads/Cjudger-CJudgr-dev/CMakeFiles/CMakeOutput.log".

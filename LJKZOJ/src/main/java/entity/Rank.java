@@ -7,7 +7,7 @@ public class Rank implements Serializable {
     private String email;
     private int ac, penalty;
     private int rank;
-    private float percent;
+    private Float percent;
 
     public void setCid(String cid) {
         this.cid = cid;
@@ -45,15 +45,15 @@ public class Rank implements Serializable {
         this.penalty = penalty;
     }
 
-    public void setRank(int rank) {
+    public void setRank(Integer rank) {
         this.rank = rank;
     }
 
-    public float getPercent() {
+    public Float getPercent() {
         return percent;
     }
 
-    public void setPercent(float percent) {
+    public void setPercent(Float percent) {
         this.percent = percent;
     }
 }

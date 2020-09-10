@@ -27,7 +27,7 @@ struct run_result{
     std::string stdAns;
     std::string stdOut;
     std::string errInfo;
-    long time;
+    int time;
     int mem;
 };
 struct com_result{

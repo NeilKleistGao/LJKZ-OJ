@@ -5,20 +5,22 @@
 
 <mapper namespace="entity">
     <insert id="addSubmission" parameterType="Submission">
-        insert into submissions(email, pid, submitTime, state, normalSubmit, timeUsed, memoryUsed, info)
-        values (#{email}, #{pid}, #{submitTime}, #{state}, #{normalSubmit}, 0, 0, '')
+        insert into submissions(sid, email, pid, submitTime, state, normalSubmit, timeUsed, memoryUsed, info)
+        values (#{sid}, #{email}, #{pid}, #{submitTime}, #{state}, #{normalSubmit}, 0, 0, '')
     </insert>
 
-    <update id="updateState" parameterType="Submission">
+    <update id="updateState" parameterType="java.lang.String">
         update submissions set state = #{state}, timeUsed = #{timeUsed}, memoryUsed = #{memoryUsed}, info = #{info}
-        where email = #{email} and pid = #{pid} and submitTime = #{submitTime}
+        where sid = #{sid}
     </update>
 
     <select id="getSubmissionList" resultType="java.util.HashMap" parameterType="java.util.Map">
-        select submissions.email, submissions.pid, submissions.submitTime, submissions.state,
+        select submissions.sid, submissions.email, submissions.pid, submissions.submitTime, submissions.state,
         submissions.normalSubmit, submissions.timeUsed, submissions.memoryUsed, submissions.info,
         problems.title, users.username
         from (submissions, problems, users)
+        where submissions.email = users.email and submissions.pid = problems.pid
+        order by submissions.submitTime desc
         limit #{start}, #{size}
     </select>
 
@@ -42,7 +44,7 @@
         select count(*) from submissions
     </select>
 
-    <select id="getSubmission" parameterType="java.util.HashMap" resultType="Submission">
-        select * from submissions where email = #{email} and pid = #{pid} and submitTime = #{submitTime}
+    <select id="getSubmission" parameterType="String" resultType="Submission">
+        select * from submissions where sid = #{sid}
     </select>
 </mapper>

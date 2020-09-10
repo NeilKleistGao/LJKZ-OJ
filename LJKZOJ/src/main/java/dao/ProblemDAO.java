@@ -50,8 +50,14 @@ public class ProblemDAO implements IProblemDAO {
     }
 
     @Override
-    public List<Problem> getProblemListInCompetition(String cid) {
+    public List<HashMap<String, String>> getProblemListInCompetition(String cid) {
         SqlSession session = basicDAO.createSession();
         return session.selectList("getProblemsListInCompetition", cid);
+    }
+
+    @Override
+    public List<Problem> getAvailableProblemInCompetition() {
+        SqlSession session = basicDAO.createSession();
+        return session.selectList("getAvailableProblemInCompetition");
     }
 }

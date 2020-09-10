@@ -2,24 +2,28 @@ package bean;
 
 import dao.IProblemDAO;
 import entity.Problem;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import utils.MD5;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.servlet.http.Part;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
-import org.apache.http.entity.FileEntity;
 
 @ManagedBean
-@RequestScoped
-public class CreateProblemBean {
+@ViewScoped
+public class CreateProblemBean implements Serializable {
     private String pid = "";
     private String title = "";
     private String problemDesc = "";
@@ -139,18 +143,28 @@ public class CreateProblemBean {
 
         if (this.file != null) {
             try (InputStream stream = file.getInputStream()) {
-                File file = new File("../temp");
+                File file = new File("../temp", pid + ".zip");
                 if (file.exists()) {
                     file.delete();
                 }
-                file = new File("../temp", this.pid);
-                Files.copy(stream, file.toPath());
+                file = new File("../" + pid + ".zip");
+                OutputStream outputStream = new FileOutputStream(file);
 
-                HttpClient client = new DefaultHttpClient();
-                HttpPost post = new HttpPost("http://localhost:8081/Rest-1.0-SNAPSHOT/upload?pid=" + this.pid);
-                FileEntity entity = new FileEntity(file);
+                byte[] bytes = new byte[1024];
+                while ((stream.read(bytes)) > 0) {
+                    outputStream.write(bytes);
+                }
+
+                outputStream.close();
+
+                HttpClient client = HttpClients.createDefault();
+                HttpPost post = new HttpPost("http://localhost:8080/Rest-1.0-SNAPSHOT/upload?pid=" + pid);
+                FileBody body = new FileBody(file);
+                HttpEntity entity = MultipartEntityBuilder.create()
+                        .addPart("file", body)
+                        .build();
+
                 post.setEntity(entity);
-
                 client.execute(post);
                 file.delete();
             }
@@ -174,6 +188,15 @@ public class CreateProblemBean {
             problemDAO.addProblem(problem);
         }
 
-        return "problems";
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = facesContext.getExternalContext();
+            externalContext.redirect("/LJKZOJ-1.0-SNAPSHOT/problems.xhtml?page=1");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "index";
     }
 }

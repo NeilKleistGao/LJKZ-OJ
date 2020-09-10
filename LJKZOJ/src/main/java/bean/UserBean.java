@@ -1,6 +1,5 @@
 package bean;
 
-import dao.IProblemDAO;
 import dao.IRankDAO;
 import dao.ISubmissionDAO;
 import dao.IUserDAO;
@@ -8,6 +7,7 @@ import entity.Rank;
 import entity.User;
 import sun.security.validator.ValidatorException;
 import utils.MD5;
+import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -16,9 +16,12 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlInputSecret;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.view.ViewScoped;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.List;
@@ -26,8 +29,8 @@ import java.util.Map;
 import java.io.File;
 
 @ManagedBean
-@RequestScoped
-public class UserBean {
+@ViewScoped
+public class UserBean implements Serializable {
     private String uid = "";
     private boolean pass;
     private String oldPassword, newPassword, confirm;
@@ -36,18 +39,8 @@ public class UserBean {
     private String usernameFeedback, passwordFeedback, confirmFeedback;
     private int acNum = 0, waNum = 0, tleNum = 0, mleNum = 0, ceNum = 0, reNum = 0;
     private Part file = null;
+    private boolean admin = false, modifiable = false;
 
-    @EJB
-    private IUserDAO userDAO;
-    @EJB
-    private ISubmissionDAO submissionDAO;
-
-
-
-/*chart*/
-    @EJB
-    private IProblemDAO problemDAO;
-    private IRankDAO rankDAO;
     private EntryForChart[] chartEntries;
     private static class EntryForChart{
         private int rank;
@@ -65,17 +58,27 @@ public class UserBean {
             this.percent = percent;
         }
     }
-    public EntryForChart[] getChartEntries() {
-        return chartEntries;
+
+    public String getChartString() {
+        String res = "";
+        for (EntryForChart chart : chartEntries) {
+            res += chart.getPercent() + ",";
+        }
+
+        if (res.length() > 0) {
+            return res.substring(0, res.length() - 1);
+        }
+        else {
+            return "0, 0";
+        }
     }
-    public void setChartEntries(EntryForChart[] chartEntries) {
-        this.chartEntries = chartEntries;
-    }
-/*chart end*/
 
-
-
-
+    @EJB
+    private IUserDAO userDAO;
+    @EJB
+    private ISubmissionDAO submissionDAO;
+    @EJB
+    private IRankDAO rankDAO;
 
     public String getUid() {
         return uid;
@@ -209,8 +212,20 @@ public class UserBean {
         ExternalContext ex = context.getExternalContext();
         Map map = ex.getSessionMap();
 
-        if (map.containsKey("uid") && "".equals(this.uid)) {
-            this.uid = map.get("uid").toString();
+        if (map.containsKey("uid")) {
+            if ("".equals(this.uid)) {
+                this.uid = map.get("uid").toString();
+            }
+            String tempUID = map.get("uid").toString();
+            String tempEmail = new String(Base64.getDecoder().decode(tempUID));
+            User tempUser = userDAO.getUser(tempEmail);
+            this.modifiable = PermissionChecker.getInstance().check(tempUser.getPermissions(),
+                    PermissionChecker.ADMIN_PERMISSION);
+        }
+
+        File file = new File("../applications/LJKZOJ-1.0-SNAPSHOT/resources/img", this.uid);
+        if (file.exists()) {
+            this.avatar = this.uid;
         }
 
         this.pass = map.containsKey("uid") && map.get("uid").equals(this.uid);
@@ -224,6 +239,8 @@ public class UserBean {
             return;
         }
 
+        this.admin = PermissionChecker.getInstance().check(user.getPermissions(),
+                PermissionChecker.PROBLEM_PERMISSION | PermissionChecker.COMPETITION_PERMISSION);
         this.username = user.getUsername();
         List<String> stateList = submissionDAO.getUserSubmissionList(this.email);
         for (String state : stateList) {
@@ -248,8 +265,20 @@ public class UserBean {
                     break;
             }
         }
-        /*chart*/
-        getForChart();
+
+        List<Rank> ranks = rankDAO.getRankByEmail(this.email);
+        this.chartEntries = new EntryForChart[ranks.size()];
+        for (int i = 0; i < ranks.size(); i++) {
+            Rank rank = ranks.get(i);
+            if (rank.getPercent() == null) {
+                int tot = rankDAO.getRankCountByCID(rank.getCid());
+                int pre = rankDAO.getRankCountByCIDLeading(rank.getCid(), rank.getAc(), rank.getPenalty());
+                rank.setRank(pre + 1);
+                rank.setPercent((float)pre / (float)tot);
+                rankDAO.updateRank(rank);
+            }
+            this.chartEntries[i].setPercent(ranks.get(i).getPercent());
+        }
     }
 
     public void validateUsername(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -337,17 +366,31 @@ public class UserBean {
         }
     }
 
-
-/*chart*/
-    public void getForChart(){
-        List<Rank> rankForChart = rankDAO.getRankByEmail(email);
-        for (int i = 0; i < rankForChart.size(); i++){
-            this.chartEntries[i] = new EntryForChart();
-            Rank rank = rankForChart.get(i);
-            this.chartEntries[i].setRank(rank.getRank());
-            this.chartEntries[i].setPercent(rank.getPercent());
-        }
+    public void setModifiable(boolean modifiable) {
+        this.modifiable = modifiable;
     }
-    /*chart end*/
 
+    public boolean isModifiable() {
+        return modifiable;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void modifyAdmin() {
+        User user = userDAO.getUser(this.email);
+        if (this.admin) {
+            user.setPermissions(user.getPermissions() | 6);
+        }
+        else {
+            user.setPermissions(user.getPermissions() & 1);
+        }
+
+        userDAO.updateUser(user);
+    }
 }

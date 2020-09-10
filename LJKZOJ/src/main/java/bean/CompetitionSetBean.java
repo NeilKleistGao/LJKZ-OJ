@@ -1,10 +1,12 @@
 package bean;
 
 import dao.ICompetitionDAO;
-import dao.IProblemDAO;
+import dao.IUserDAO;
 import entity.Competition;
+import entity.User;
 import utils.Pagination;
 import utils.CompEntry;
+import utils.PermissionChecker;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
@@ -13,7 +15,9 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @ManagedBean
 @RequestScoped
@@ -24,9 +28,12 @@ public class CompetitionSetBean {
     private CompEntry[] compEntries = new CompEntry[NUMBER_OF_ENTRIES_IN_PAGE];
     private String searchFor="Finished";
     private Pagination[] paginations = null;
+    private boolean addable = false;
 
     @EJB
     private ICompetitionDAO competitionDAO;
+    @EJB
+    private IUserDAO userDAO;
 
     public CompEntry[] getCompEntries() {
         return compEntries;
@@ -68,7 +75,11 @@ public class CompetitionSetBean {
         this.paginations = paginations;
     }
 
-    private void setupPagination(){
+    public void setupPagination(){
+        if (this.pageNumber <= 0) {
+            this.pageNumber = 1;
+        }
+
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {
@@ -121,7 +132,7 @@ public class CompetitionSetBean {
 
     public void init(){
         this.totalNumber = (competitionDAO.getComTotal() + NUMBER_OF_ENTRIES_IN_PAGE - 1) / NUMBER_OF_ENTRIES_IN_PAGE;
-        List<Competition> competitions = competitionDAO.getCompetitionList(this.pageNumber, NUMBER_OF_ENTRIES_IN_PAGE,
+        List<Competition> competitions = competitionDAO.getCompetitionList(this.pageNumber * NUMBER_OF_ENTRIES_IN_PAGE, NUMBER_OF_ENTRIES_IN_PAGE,
                 searchFor);
         for (int i = 0; i < competitions.size(); i++) {
             this.compEntries[i] = new CompEntry();
@@ -147,7 +158,19 @@ public class CompetitionSetBean {
             this.paginations[i] = new Pagination();
         }
 
-        this.setupPagination();
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map map = externalContext.getSessionMap();
+
+        if (!map.containsKey("uid")) {
+            return;
+        }
+
+        String uid = map.get("uid").toString();
+        String email = new String(Base64.getDecoder().decode(uid));
+        User user = userDAO.getUser(email);
+
+        this.addable = PermissionChecker.getInstance().check(user.getPermissions(), PermissionChecker.COMPETITION_PERMISSION);
     }
 
     public void CompStateChange(ValueChangeEvent e){
@@ -160,5 +183,17 @@ public class CompetitionSetBean {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public void setAddable(boolean addable) {
+        this.addable = addable;
+    }
+
+    public boolean isAddable() {
+        return addable;
+    }
+
+    public String create() {
+        return "creatcomp";
     }
 }

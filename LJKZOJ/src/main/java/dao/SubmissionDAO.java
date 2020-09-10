@@ -5,7 +5,6 @@ import org.apache.ibatis.session.SqlSession;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +21,9 @@ public class SubmissionDAO implements ISubmissionDAO{
         session.close();
     }
 
-    public void updateState(Submission submission) {
+    public void updateState(String sid) {
         SqlSession session = basicDAO.createSession();
-        session.update("updateState", submission);
+        session.update("updateState", sid);
         session.commit();
         session.close();
     }
@@ -68,12 +67,9 @@ public class SubmissionDAO implements ISubmissionDAO{
     }
 
     @Override
-    public Submission getSubmission(String email, String pid, Date submitTime) {
+    public Submission getSubmission(String sid) {
         SqlSession  session = basicDAO.createSession();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("email", email);
-        map.put("pid", pid);
-        map.put("submitTime", submitTime);
-        return session.selectOne("getSubmission", map);
+        return session.selectOne("getSubmission", sid);
     }
 }

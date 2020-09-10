@@ -25,9 +25,9 @@
     </select>
 
     <insert id="addProblem" parameterType="Problem">
-        insert into problems (pid, title, labels, problemDesc, totalSubmit, acSubmit,
+        insert into problems (pid, title, labels, problemDesc,
          exampleInput, exampleOutput, competitionOnly, memoryLimit, timeLimit)
-         values (#{pid}, #{title}, #{labels}, #{problemDesc}, 0, 0, #{exampleInput}, #{exampleOutput},
+         values (#{pid}, #{title}, #{labels}, #{problemDesc}, #{exampleInput}, #{exampleOutput},
          ${competitionOnly}, ${memoryLimit}, ${timeLimit})
     </insert>
 
@@ -42,7 +42,11 @@
         select count(pid) from problems;
     </select>
 
-    <select id="getProblemsListInCompetition" resultType="Problem" parameterType="java.lang.String">
-        select * from problems where #{cid} = problem_used.cid and problem_used.pid = problems.pid
+    <select id="getProblemsListInCompetition" resultType="java.util.HashMap" parameterType="java.lang.String">
+        select problems.pid, problems.title from (problems, problem_used) where #{cid} = problem_used.cid and problem_used.pid = problems.pid
+    </select>
+
+    <select id="getAvailableProblemInCompetition" resultType="Problem">
+        select * from problems where competitionOnly = 1
     </select>
 </mapper>

@@ -48,19 +48,9 @@
                         </h:inputText>
                         <br/>
                         <div class="form-check">
-                            <!--<c:if test="#{create_comp_bean.createEntries}">-->
-                                <ui:repeat var="proforcomp" value="#{create_comp_bean.createEntries}" varStatus="status">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" checked=" " value="#{proforcomp.pid}" />
-                                        <small>
-                                            #{proforcomp.title}
-                                        </small>
-                                    </label>
-                                </ui:repeat>
-<!--                            </c:if>-->
-                            <!--<c:otherwise>
-                                <small class="text-muted">No Problem Avaliable.</small>
-                            </c:otherwise>-->
+                            <h:selectManyCheckbox value="#{create_comp_bean.checkedPid}">
+                                <f:selectItems value="#{create_comp_bean.show}"/>
+                            </h:selectManyCheckbox>
                         </div>
                         <br/>
                         <h:commandButton styleClass="btn btn-outline-success" value="save" action="#{create_comp_bean.save}"/>

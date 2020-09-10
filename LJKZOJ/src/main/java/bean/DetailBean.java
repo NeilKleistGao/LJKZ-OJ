@@ -30,12 +30,13 @@ public class DetailBean {
     private String email;
     private  Date submitTime;
 
-    private String[] codeString;
+    private String codeString = "";
     private String codeFile;
 
     private int timeUsed, memoryUsed;
     private String title;
     private String state;
+    private String sid;
 
     @EJB
     private ISubmissionDAO submissionDAO;
@@ -74,11 +75,11 @@ public class DetailBean {
         this.codeid = codeid;
     }
 
-    public String[] getCodeString() {
+    public String getCodeString() {
         return codeString;
     }
 
-    public void setCodeString(String[] codeString) {
+    public void setCodeString(String codeString) {
         this.codeString = codeString;
     }
 
@@ -122,14 +123,22 @@ public class DetailBean {
         this.state = state;
     }
 
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+
+    public String getSid() {
+        return sid;
+    }
+
     public void init() throws IOException {
-        Submission submissionDetail = submissionDAO.getSubmission(email,pid,submitTime);
-        Problem problemDetail = problemDAO.getProblem(pid);
+        Submission submissionDetail = submissionDAO.getSubmission(sid);
+        Problem problemDetail = problemDAO.getProblem(submissionDetail.getPid());
         this.timeUsed = submissionDetail.getTimeUsed();
         this.memoryUsed = submissionDetail.getMemoryUsed();
         this.title = problemDetail.getTitle();
         this.state = submissionDetail.getState();
-        this.codeFile= MD5.encrypt(submissionDetail.getEmail() + submissionDetail.getPid() + submissionDetail.getSubmitTime());
+        this.codeFile = "../code/" + MD5.encrypt(submissionDetail.getEmail() + submissionDetail.getPid() + submissionDetail.getSubmitTime());
         getProblemCode();
         }
 
@@ -137,7 +146,8 @@ public class DetailBean {
         BufferedReader bfr = new BufferedReader(new FileReader(codeFile));
         String str = null;
         for(int lineNumber = 0 ;(str = bfr.readLine()) != null ;lineNumber++){
-            this.codeString[lineNumber] = str;
+            this.codeString += str;
+            this.codeString += "\n";
         }
         bfr.close();
     }

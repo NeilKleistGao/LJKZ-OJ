@@ -24,7 +24,7 @@ import java.util.Map;
 public class ProblemSetBean {
     private final static int NUMBER_OF_ENTRIES_IN_PAGE = 16;
 
-    private int pageNumber;
+    private int pageNumber = 1;
     private int totalNumber;
     private Entry[] entries = new Entry[NUMBER_OF_ENTRIES_IN_PAGE];
     private String searchFor = "title", searchContent = "";
@@ -80,7 +80,8 @@ public class ProblemSetBean {
 
     public void init() {
         this.totalNumber = (problemDAO.getTotal() + NUMBER_OF_ENTRIES_IN_PAGE - 1) / NUMBER_OF_ENTRIES_IN_PAGE;
-        List<Problem> problems = problemDAO.getProblemList(this.pageNumber, NUMBER_OF_ENTRIES_IN_PAGE,
+        List<Problem> problems = problemDAO.getProblemList((this.pageNumber - 1) * NUMBER_OF_ENTRIES_IN_PAGE,
+                NUMBER_OF_ENTRIES_IN_PAGE,
                 searchFor, searchContent);
         for (int i = 0; i < problems.size(); i++) {
             this.entries[i] = new Entry();
@@ -107,11 +108,9 @@ public class ProblemSetBean {
         for (int i = 0; i < this.paginations.length; i++) {
             this.paginations[i] = new Pagination();
         }
-
-        this.setupPaginations();
     }
 
-    private void setupPaginations() {
+    public void setupPaginations() {
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {
@@ -197,11 +196,6 @@ public class ProblemSetBean {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-    }
-
-    public String create() {
-        return "create";
     }
 
     public boolean isAddable() {

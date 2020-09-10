@@ -25,12 +25,15 @@ public class CompetitionFilter implements Filter {
         }
         Competition competition = competitionDAO.getCompetition(cid);
 
-        if (competition != null) {
-            Date now = new Date();
-            if (now.before(competition.getBeginTime())) {
-                httpResponse.sendRedirect("/LJKZOJ-1.0-SNAPSHOT/competitions.xhtml");
-            }
-        }
+//        if (competition != null) {
+//            Date now = new Date();
+//            if (now.before(competition.getBeginTime())) {
+//                httpResponse.sendRedirect("/LJKZOJ-1.0-SNAPSHOT/competitions.xhtml");
+//            }
+//        }
+//        else {
+//            httpResponse.sendRedirect("/LJKZOJ-1.0-SNAPSHOT/competitions.xhtml");
+//        }
 
         chain.doFilter(request, response);
     }

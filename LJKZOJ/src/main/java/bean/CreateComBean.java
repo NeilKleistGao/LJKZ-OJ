@@ -10,18 +10,23 @@ import utils.MD5;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
+import java.io.Serializable;
+import java.util.*;
 import java.nio.file.Files;
 import java.io.File;
-import java.util.List;
 
 @ManagedBean
-@RequestScoped
-public class CreateComBean {
+@ViewScoped
+public class CreateComBean implements Serializable {
+
+    private static final long serialVersionUID = 1145141919;
 //    private static int NUM=6;
     private String cid="";
     private String title="";
@@ -29,8 +34,7 @@ public class CreateComBean {
     private Date overDate;
     /*entry for all problems can be used in competition*/
     private Entry[] createEntries= null;
-    /*entry for the problems already be used in the competition*/
-    private Entry[] includedEntries = null;
+    private String[] show = null;
     /*array to store the pid chosen*/
     private String[] checkedPid;
 
@@ -80,14 +84,6 @@ public class CreateComBean {
         this.createEntries = createEntries;
     }
 
-    public Entry[] getIncludedEntries() {
-        return includedEntries;
-    }
-
-    public void setIncludedEntries(Entry[] includedEntries) {
-        this.includedEntries = includedEntries;
-    }
-
     public String[] getCheckedPid() {
         return checkedPid;
     }
@@ -97,13 +93,17 @@ public class CreateComBean {
     }
 
     public void initCreateEntries(){
-        List<Problem> problems = problemDAO.getProblemListInCompetition(this.cid);
+        List<Problem> problems = problemDAO.getAvailableProblemInCompetition();
+        this.createEntries = new Entry[problems.size()];
+        this.checkedPid = new String[problems.size()];
+        this.show = new String[problems.size()];
         for(int i = 0; i < problems.size(); i++){
             this.createEntries[i] = new Entry();
             Problem problem = problems.get(i);
             this.createEntries[i].setPid(problem.getPid());
             this.createEntries[i].setLabels(problem.getLabels());
             this.createEntries[i].setTitle(problem.getTitle());
+            this.show[i] = problem.getPid() + ": " + problem.getTitle();
         }
     }
 
@@ -116,12 +116,16 @@ public class CreateComBean {
         competition.setEndTime(this.overDate);
         competition.setTitle(this.title);
 
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Map map = externalContext.getSessionMap();
+        competition.setCreator(new String(Base64.getDecoder().decode(map.get("uid").toString())));
+
+        competitionDAO.addCompetition(competition);
+
         for (Entry createEntry : createEntries) {
             for (String s : checkedPid) {
-                if (createEntry.getPid().equals(s)) {
-//                    this.includedEntries[j].setPid(createEntry.getPid());
-//                    this.includedEntries[j].setLabels(createEntry.getLabels());
-//                    this.includedEntries[j].setTitle(createEntry.getTitle());
+                if (s != null && s.equals(createEntry.getPid() + ": " + createEntry.getTitle())) {
                     competitionDAO.addCompetitionProblem(createEntry.getPid(), cid);
                 }
             }
@@ -130,4 +134,7 @@ public class CreateComBean {
         return "competitions";
     }
 
+    public String[] getShow() {
+        return show;
+    }
 }

@@ -10,11 +10,12 @@
 <head>
     <title>LJKZ OJ - Detail</title>
     <ui:include src="components/page_head.xhtml" />
-    <link rel="stylesheet" href="resources/js/highlight/styles/default.css" />
-    <script src="resources/js/highlight/highlight.pack.js" type=""></script>
+    <link rel="stylesheet" href="resources/css/styles/atom-one-dark.css"/>
+    <script src="resources/js/highlight.pack.js" type=""></script>
     <script type="">hljs.initHighlightingOnLoad();</script>
     <f:metadata>
-        <f:event type="preValidate" listener="#{submit_bean.init}"/>
+        <f:viewParam name="sid" value="#{detail_bean.sid}" id="sid"/>
+        <f:event type="preRenderView" listener="#{detail_bean.init}"/>
     </f:metadata>
 </head>
 <body>

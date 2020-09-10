@@ -21,7 +21,8 @@
     <f:metadata>
         <f:viewParam name="page" id="page" value="#{comp_set_bean.pageNumber}"/>
         <f:viewParam name="for" id="for" value="#{comp_set_bean.searchFor}"/>
-        <f:event type="preRenderView" listener="#{comp_set_bean.init}"/>
+        <f:event type="preValidate" listener="#{comp_set_bean.init}"/>
+        <f:event type="preRenderView" listener="#{comp_set_bean.setupPagination}"/>
     </f:metadata>
 
 </h:head>
@@ -43,11 +44,9 @@
                                 <f:selectItem itemValue="aboutToStart" itemLabel="About To Start"/>
                             </h:selectOneMenu>
                         </h:form>
-                        <h:form>
-                            <c:if test="#{uid == 'MTIwODM2ODU3N0BxcS5jb20='}">
-                                <h:commandButton style="margin-left: 1rem;" styleClass="btn btn-outline-warning" value="add" action="creatcomp"/>
-                            </c:if>
-                        </h:form>
+                        <c:if test="#{comp_set_bean.addable}">
+                            <a style="margin-left: 1rem;" class="btn btn-outline-warning" href="creatcomp.xhtml">add</a>
+                        </c:if>
                     </div>
                 </div>
                 <div>
@@ -65,11 +64,9 @@
                             <ui:repeat var="comp" value="#{comp_set_bean.compEntries}" varStatus="status">
                                 <tr>
                                     <td>
-                                        <c:if test="#{comp_set_bean.searchFor != 'About To Start'}">
-                                            <a href="competition.xhtml?pid=#{comp.cid}">
-                                                #{comp.title}
-                                            </a>
-                                        </c:if>
+                                        <a href="competition.xhtml?cid=#{comp.cid}">
+                                            #{comp.title}
+                                        </a>
                                     </td>
                                     <td>#{comp.startT}</td>
                                     <td>#{comp.overT}</td>

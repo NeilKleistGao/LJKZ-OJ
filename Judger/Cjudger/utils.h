@@ -9,7 +9,7 @@
 
 #include<sys/syscall.h>
 
-inline int tv2ms(struct timeval tv) {
-	return (int) (tv.tv_usec / 1000) + tv.tv_sec * 1000;
-}
+//long tv2ms(struct timeval tv) {
+//	return (int) (tv.tv_usec / 1000) + tv.tv_sec * 1000;
+//}
 #endif //JUDGER_UTILS_H

@@ -5,24 +5,72 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
        xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:ui="http://java.sun.com/jsf/facelets">
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:c="http://java.sun.com/jstl/core">
 <h:head>
+    <f:metadata>
+        <f:viewParam name="cid" value="#{comp_bean.cid}" required="true"/>
+        <f:event type="preRenderView" listener="#{comp_bean.init}"/>
+    </f:metadata>
     <title>LJKZ OJ - comptitle</title>
     <ui:include src="components/page_head.xhtml"/>
-
 </h:head>
 <h:body>
-    <ui:include src="components/navigation.xhtml"/>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a href="#" class="navbar-brand">LJKZ OJ</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="index.xhtml" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="problems.xhtml?page=1" class="nav-link">Problems Set</a>
+                </li>
+                <li class="nav-item">
+                    <a href="competitions.xhtml?page=1" class="nav-link">Competitions</a>
+                </li>
+                <li class="nav-item">
+                    <a href="submit.xhtml" class="nav-link">Submissions</a>
+                </li>
+            </ul>
+
+            <c:if test="#{empty uid}">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="register.xhtml" class="nav-link">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.xhtml" class="nav-link">Login</a>
+                    </li>
+                </ul>
+            </c:if>
+            <c:if test="#{not empty uid}">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="user.xhtml?uid=#{uid}" class="nav-link">
+                            <h:outputText value="#{username}"/>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <p class="nav-link">Logout</p>
+                    </li>
+                </ul>
+            </c:if>
+        </div>
+    </nav>
+    <br/>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="border-primary col-8" style="min-height: 40rem;">
                 <div class="card-header">
-                    <h3 class="card-title">comp_title</h3>
-                    <div class="row justify-content-center">
-                        <h5>startT</h5>
-                        <div class="progress-bar-animated"></div>
-                        <h5>overT</h5>
-                    </div>
+                    <h3 class="card-title">#{comp_bean.competition.title}</h3>
+                    <h5>startTime: #{comp_bean.competition.beginTime}</h5>
+                    <h5>overTime: #{comp_bean.competition.endTime}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -60,10 +108,6 @@
                             <h4>
                                 Penalty:
                                 <small class="text-muted">#{comp_bean.userPenalty}</small>
-                            </h4>
-                            <h4>
-                                Rank:
-                                <small class="text-muted">#{comp_bean.rank}</small>
                             </h4>
                         </div>
                     </div>

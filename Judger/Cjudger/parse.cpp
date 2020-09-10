@@ -19,7 +19,6 @@
 #include <string>
 
 
-#include "utils.h"
 #include "initservice.h"
 #include "exit_code.h"
 #include "parse.h"
@@ -41,6 +40,7 @@ void clear_env(std::string temDir){
     std::string buffer;
     buffer = "rm -rf "+temDir;
     if(system(buffer.c_str()) != 0){
+
             error(EX_ERROR,0,"DEL TEMP Failed");
     }
 }
@@ -55,22 +55,28 @@ ini_result init_env(){
 	std::string outFileTem = tmpDirName + "/" + pid + ".out";
 	std::string errFilename = tmpDirName + "/" + pid + ".err";
 	struct passwd *nobody = getpwnam("root");
-//	// 给予当前进程权限，直接给root
-//    uid_t  parent_uid = getuid();
-//	uid_t  parent_gid = getegid();
-//	uid_t child_uid = nobody->pw_uid;
-//	uid_t child_gid = nobody->pw_gid;
-//	chown(tmpDirName.c_str(),child_uid,child_gid);
+	// 给予当前进程权限，直接给root
+    uid_t  parent_uid = getuid();
+	uid_t  parent_gid = getegid();
+	uid_t child_uid = nobody->pw_uid;
+	uid_t child_gid = nobody->pw_gid;
+	chown(tmpDirName.c_str(),child_uid,child_gid);
 	chmod(tmpDirName.c_str(),00711);
 	// infile Auth
 	if(outFileTem.c_str() != NULL){
-		int tmpof = open(outFileTem.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00777);
-		close(tmpof);
+        int tmcof =open(outFileTem.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00777);
+        if(tmcof<0){
+            error(EX_ERROR,0,"Create file OUTFILE failed\n");
+        }
+        close(tmcof);
 	}
-	if(errFilename.c_str() !=NULL){
-	    int tmpof = open(errFilename.c_str(),O_WRONLY|O_CREAT|O_TRUNC,00777);
-	    close(tmpof);
-	}
+    if(errFilename.c_str() != NULL){
+        int tmcof = open(errFilename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00777);
+        if(tmcof<0){
+            error(EX_ERROR,0,"Create file ERRFILE failed\n");
+        }
+        close(tmcof);
+    }
 	ini_result res;
 	res.temDir = tmpDirName;// 临时目录
 	res.pid = pid;// pid
@@ -81,7 +87,7 @@ ini_result init_env(){
 }
 run_result  return_result(std::string info,int status,
                           std::string out_ans,
-                          long time,int mem){
+                          int time,int mem){
     run_result res;
     res.stdOut = out_ans;
     res.errInfo = info;
@@ -149,9 +155,18 @@ run_result  return_result(std::string info,int status,
 };
  *
  * */
+int tv2ms(struct timeval tv) {
+    return (int) (tv.tv_usec / 1000) + tv.tv_sec * 1000;
+}
+int timekill = 0;
+void timeout() {
+    if (child_pid > 0) kill(child_pid, SIGKILL);
+    timekill=1;
+    alarm(0);
+}
 run_result run(run_in &runIn){
 	int status;
-    time_t time_usage = 0;
+    int time_usage = 0;
     int mem_usage = 0;
 	child_pid = fork();
 	if(child_pid == -1){
@@ -167,59 +182,71 @@ run_result run(run_in &runIn){
 	        error(EX_ERROR,0,"open file error");
 	    }
         dup2(fd_in,STDIN_FILENO);
-	    dup2(fd_out,STDOUT_FILENO);
-	    dup2(fd_err,STDERR_FILENO);
+        dup2(fd_out,STDOUT_FILENO);
+        dup2(fd_err,STDERR_FILENO);
         if(ptrace(PTRACE_TRACEME,0,NULL,NULL) < 0){
 	        error(EX_ERROR,0,"ptrace error");
 	    }
-        printf("run child process");
-        if(execv(runIn.stdexec_file.c_str(), NULL) == -1){
+        if(execv(runIn.stdexec_file.c_str(),NULL) == -1){
 	        error(EX_ERROR,0,"execv error");
 	    }
-	}else{
+
+    }else{
 	    // parent process
+        signal(SIGALRM, reinterpret_cast<__sighandler_t>(timeout));
+        alarm((int) (timeLimit + 2000) / 1000);
 	    struct rusage usage;
 	    while(1){
 	        wait4(child_pid,&status,WUNTRACED,&usage);
-            long tmpmem = usage.ru_minflt * (getpagesize() >> 10);//get_memory_by_pid(child_pid);
+            int tmpmem = usage.ru_minflt * (getpagesize() >> 10);//get_memory_by_pid(child_pid);
             if(tmpmem>mem_usage)mem_usage=tmpmem;
 	        time_usage = tv2ms(usage.ru_stime)+tv2ms(usage.ru_utime);
-	        if(time_usage>timeLimit){
-	            kill(child_pid,SIGKILL);
+	        if(time_usage>timeLimit || timekill){
+	            ptrace(PTRACE_KILL,child_pid,NULL,NULL);
 	            return return_result("TLE", EX_TLE, runIn.stdout_file, time_usage, mem_usage);
 	        }
-	        if(mem_usage>memoryLimit){
-	            kill(child_pid,SIGKILL);
-	            return return_result("MLE_NORMAL", EX_MLE, runIn.stdout_file, time_usage, mem_usage);
+	        if(tmpmem>memoryLimit){
+//	            std::cout<<tmpmem<<"----"<<memoryLimit<<std::endl;
+                ptrace(PTRACE_KILL,child_pid,NULL,NULL);
+	            return return_result("MLE_NORMAL", EX_MLE, runIn.stdout_file, time_usage, tmpmem);
 	        }
 	        // 正常退出
             if(WIFEXITED(status)){
+                if(WIFEXITED(status))
                 return return_result("Compile and Run end", EX_SUCCESS, runIn.stdout_file, time_usage, mem_usage);
-            }else if(WIFSIGNALED(status)){// 信号中断
+                else return return_result("RE",EX_RE,runIn.stdout_file,time_usage,mem_usage);
+            }
+            if(WIFSIGNALED(status)){
+                return return_result("RE",EX_RE,runIn.stdout_file,time_usage,mem_usage);
+            }
+            if(WIFSTOPPED(status)){
+                int sig = WSTOPSIG(status);
+                switch (sig){
+                    case SIGUSR1:
+                        break;
+                    case SIGTRAP:
+                        return_result("RE",EX_RE,runIn.stdout_file,time_usage,mem_usage);
+                        break;
+                    default:
+                        return_result("RE",EX_RE,runIn.stdout_file,time_usage,mem_usage);
+                }
+            }
+            if(WIFSIGNALED(status)){// 信号中断
                 if(WTERMSIG(status)==SIGSEGV){
-                    if(mem_usage > memoryLimit){
-                        return return_result("MLE_SIG", EX_MLE, runIn.stdout_file, time_usage, mem_usage);
-                    }
+                    return return_result("RE_SIG", EX_RE, runIn.stdout_file, time_usage, mem_usage);
                 }
                 else if(WTERMSIG(status) == SIGXCPU){
-                    if(time_usage > timeLimit){
-                        return return_result("TLE_SIG", EX_TLE, runIn.stdout_file, time_usage, mem_usage);
-                    }
+
                 }
                 else if(WTERMSIG(status) == SIGKILL || WTERMSIG(status) == SIGABRT){
-                    if(mem_usage > memoryLimit){
-                        return return_result("MLE_SIG", EX_MLE, runIn.stdout_file, time_usage, mem_usage);
-                    }
-                    else if(time_usage > timeLimit){
-                        return return_result("TLE_SIG", EX_TLE, runIn.stdout_file, time_usage, mem_usage);
-                    }else
                         return return_result("Runtime Error", EX_RE, runIn.stdout_file, time_usage, mem_usage);
-                }else return return_result("Runtime Error", EX_RE, runIn.stdout_file, time_usage, mem_usage);
+                }
+                else return return_result("Runtime Error", EX_RE, runIn.stdout_file, time_usage, mem_usage);
             }
             ptrace(PTRACE_SYSCALL,child_pid,NULL,NULL);
 	    }
 	}
-	return return_result("Run Error", EX_SUCCESS, runIn.stdout_file, time_usage, mem_usage);
+	return return_result("Run Error", EX_ERROR, runIn.stdout_file, time_usage, mem_usage);
 }
 void print_usage() {
 	printf("Usage: %s [OPTION] PROGRAM \n", program_invocation_name);

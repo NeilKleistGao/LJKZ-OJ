@@ -38,9 +38,18 @@
                     <small class="text-muted"><h:outputText value="#{user_bean.email}"/></small>
                 </h2>
 
+                <h:form rendered="#{user_bean.modifiable}" styleClass="form-group">
+                    <div class="form-check">
+                        <h:selectBooleanCheckbox
+                                value="#{user_bean.admin}"
+                                styleClass="form-check-input"/>set as admin
+                    </div>
+                    <h:commandLink action="#{user_bean.modifyAdmin}" value="save" styleClass="btn btn-sm btn-danger"/>
+                </h:form>
+
                 <br/>
                 <h3>STATISTIC<h:outputText styleClass="text-muted" value="(#{user_bean.sum} in total)"/></h3>
-                <div class="row justify-content-center">
+                <div class="row">
                     <div style="width: 40rem; height: 30rem" id="statistic"></div>
                     <div style="width: 40rem; height: 30rem" id="Linechart"></div>
                 </div>
@@ -105,8 +114,9 @@
         </div>
     </div>
     <br/>
+
     <script>
-        let chart = echarts.init(document.getElementById("statistic"));
+        let chart = echarts.init(document.getElementById("statistic"), "dark");
         let option = {
             legend: {
                 data: ["Proportion of Submissions"]
@@ -148,97 +158,26 @@
         chart.setOption(option);
     </script>
     <script>
-        let myChart = echarts.init(document.getElementById('Linechart'));
+        let myChart2 = echarts.init(document.getElementById('Linechart'), "dark");
         let colors = ['#5793f3', '#d14a61', '#675bba'];
-        let option = {
-            color: colors,
-            tooltip: {
-                trigger: 'none',
-                axisPointer: {
-                    type: 'cross'
-                }
+        let option2 = {
+            colors: colors,
+            xAxis: {
+                type: 'category',
             },
-            legend: {
-                data:['Rank For Each Competition', 'RankRC For Each Competition']
+            yAxis: {
+                type: 'value'
             },
-            grid: {
-                top: '4%',
-                bottom: '3%'
-            },
-            xAxis: [
-                {
-                    type: 'category',
-                    axisTick: {
-                        alignWithLabel: true
-                    },
-                    axisLine: {
-                        onZero: false,
-                        lineStyle: {
-                            color: colors[1]
-                        }
-                    },
-                    axisPointer: {
-                        label: {
-                            formatter: function (params) {
-                                return 'Rank For Each Competition  ' + params.value
-                                    + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                            }
-                        }
-                    },
-                    data: [1,2,3,4,5]
-                },
-                {
-                    type: 'category',
-                    axisTick: {
-                        alignWithLabel: true
-                    },
-                    axisLine: {
-                        onZero: false,
-                        lineStyle: {
-                            color: colors[0]
-                        }
-                    },
-                    axisPointer: {
-                        label: {
-                            formatter: function (params) {
-                                return 'RankPercent For Each Competition  ' + params.value
-                                    + (params.seriesData.length ? '：' + params.seriesData[0].data : '');
-                            }
-                        }
-                    },
-                    data: [1,2,3,4,5]
-                }
-            ],
-            yAxis: [
-                {
-                    type: 'value'
-                }
-            ],
-            series: [
-                {
-                    name: 'Rank For Each Competition',
-                    type: 'line',
-                    xAxisIndex: 1,
-                    smooth: true,
-                    data:{
-                        value:[#{user_bean.chartEntries.Rank}],
-                        name:"Rank"
-                    }
-                },
-                {
-                    name: 'RankPercent For Each Competition',
-                    type: 'line',
-                    smooth: true,
-                    data: {
-                        value:[#{user_bean.chartEntries.Percent}],
-                        name:"Percent"
-                    }
-                }
-            ]
+            series: [{
+                data: [#{user_bean.chartString}],
+                type: 'line',
+                smooth: true
+            }]
         };
 
-    </script>
 
+        myChart2.setOption(option2);
+    </script>
 </h:body>
 
 </html>

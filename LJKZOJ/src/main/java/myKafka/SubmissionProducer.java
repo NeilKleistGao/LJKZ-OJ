@@ -19,17 +19,12 @@ public class SubmissionProducer implements ISubmissionProducer {
         //重试次数
         properties.put("retries","0");
         properties.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");
-        properties.put("value.serializer","SubmissionJsonSerializer");
+        properties.put("value.serializer","myKafka.SubmissionJsonSerializer");
         producer = new KafkaProducer<>(properties);
     }
 
     @Override
-    public void send() {
-
-    }
-
     public void send(String topic, String key, Submission value){
         producer.send(new ProducerRecord<String, Submission>(topic, value));
-        producer.close();
     }
 }

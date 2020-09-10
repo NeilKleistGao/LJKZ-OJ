@@ -28,7 +28,7 @@
         select * from competitions where cid = #{cid}
     </select>
     
-    <insert id="addCompetitionProblem" parameterType="Map">
+    <insert id="addCompetitionProblem" parameterType="java.util.HashMap">
         insert into problem_used(cid, pid) values(#{cid}, #{pid})
     </insert>
 

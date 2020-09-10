@@ -75,23 +75,22 @@ public class SubmitBean {
     public void init(){
         this.totalNumber = (submissionDAO.getAllSubmitTotal() + NUMBER_OF_ENTRIES_IN_PAG - 1) / NUMBER_OF_ENTRIES_IN_PAG;
         List<HashMap<String, Object>> submit = submissionDAO.getSubmissionList(0,NUMBER_OF_ENTRIES_IN_PAG);
+        this.submitEntries = new SubmitEntry[NUMBER_OF_ENTRIES_IN_PAG];
         for (int i = 0; i < submit.size(); i++){
             this.submitEntries[i] = new SubmitEntry();
             HashMap<String, Object> submitMap = submit.get(i);
-            this.submitEntries[i].setEmail(submitMap.get("submissions.email").toString());
-            this.submitEntries[i].setPid(submitMap.get("submissions.pid").toString());
-            this.submitEntries[i].setSubmitTime((Date)submitMap.get("submissions.submitTimed"));
-            this.submitEntries[i].setState(submitMap.get("submissions.state").toString());
-            this.submitEntries[i].isNormalSubmit((boolean)submitMap.get("submissions.normalSubmit"));
-            this.submitEntries[i].setTimeUsed((int)submitMap.get("submissions.timeUsed"));
-            this.submitEntries[i].setMemoryUsed((int)submitMap.get("submissions.memoryUsed"));
-            this.submitEntries[i].setInfo(submitMap.get("submissions.info").toString());
-//            this.submitEntries[i].setTitle(submitMap.get("problems.title").toString());
-            //TODO:
-            this.submitEntries[i].setUsername(submitMap.get("users.username").toString());
+            this.submitEntries[i].setEmail(submitMap.get("email").toString());
+            this.submitEntries[i].setPid(submitMap.get("pid").toString());
+            this.submitEntries[i].setSubmitTime((Date)submitMap.get("submitTime"));
+            this.submitEntries[i].setState(submitMap.get("state").toString());
+            this.submitEntries[i].setNormalSubmit((boolean)submitMap.get("normalSubmit"));
+            this.submitEntries[i].setTimeUsed((Integer) submitMap.get("timeUsed"));
+            this.submitEntries[i].setMemoryUsed((Integer) submitMap.get("memoryUsed"));
+            this.submitEntries[i].setInfo(submitMap.get("info").toString());
+            this.submitEntries[i].setTitle(submitMap.get("title").toString());
+            this.submitEntries[i].setUsername(submitMap.get("username").toString());
+            this.submitEntries[i].setSid(submitMap.get("sid").toString());
         }
-
-
 
         if (this.totalNumber == 0) {
             this.totalNumber = 1;
@@ -109,7 +108,11 @@ public class SubmitBean {
         this.setupPagination();
     }
 
-    private void setupPagination() {
+    public void setupPagination() {
+        if (this.pageNumber <= 0) {
+            this.pageNumber = 1;
+        }
+
         this.paginations[0].setNotation("<<");
         this.paginations[this.paginations.length - 1].setNotation(">>");
         if (this.pageNumber == 1) {
